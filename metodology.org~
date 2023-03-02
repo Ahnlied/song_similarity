@@ -1,0 +1,98 @@
+#+title: Methodology to determine song similarity
+#+author: Jorge Andrés Carballo Santana
+
+Methodology to determine song similarity
+
+There are some parameters that characterizes a song, such as:
+
+1. TONE COLOR/TIMBRE/INSTRUMENTATION
+- percussion = instr. which is struck, (drums, bell, rattle, marimba, vibes, xylophone, glockenspiel, piano (because note sounded by striking hammer))
+
+        strings (violin, viola, cello, double bass, guitar, harp etc.)
+
+        brass (trumpet, trombone, French horn, tuba, etc.)
+
+        woodwinds (flute, oboe, clarinet, bassoon, saxophone, etc. – last 4 = reeds, ob. & bsn. = double reeds vs. clar. & sax. = single reeds)
+
+        voices (soprano, alto, tenor, bass, etc. or the medieval triplum, duplum, tenor)
+
+        a.d.s.r. = attack-decay-sustain-release, a technical description of tone color, e.g. for synthesizer sound envelope design or analysis
+
+
+    RHYTHM
+
+        beat/pulse
+
+        meter = group of beats, e.g. group of four beats–"4/4"–numerator is number of beats
+
+        duple meter = a group of beats divisible by 2
+
+        triple meter = a group of beats divisible by 3
+
+        subdivision of individual beat can be duple or triple as well
+
+        a duple meter with triple subdivision is called compound duple meter and, vice versa, compound triple meter has duple subdivision
+
+
+    MELODY
+
+        pitch + time = melody
+
+        pitch: high/low = sound wave, frequency of vibration of air on eardrum
+
+        melodic contour = a draw-able shape which shows perceived pitch height and rate of change
+
+        phrases–cadence–climax–scales (scales also pertain to harmony)
+
+
+    DYNAMICS/EXPRESSION
+
+        loud/soft (forte/piano)
+
+        legato/staccato (smooth/choppy or spiky), etc.
+
+
+
+    TEXTURE (# OF INDEPENDENT PARTS)
+
+        monophony (one melody)
+
+        homophony (one main melody
+
+        polyphony (many simultaneous melodies which seem to relate)
+
+        heterophony (chaos–unrelated sounds or melodies)
+
+
+    HARMONY
+
+        consonant/consonance (pleasing) vs. dissonant/dissonance (jarring, tense, ugly, unsettling)
+
+        cadence = ending, punctuation, as in speech
+
+        tonal system vs. modal or pre-tonal, atonal, microtonal or post-tonal
+
+        notes in scale or melody which play important harmonic roles
+
+        tonic (home note)
+
+        dominant (5 steps above tonic)
+
+        subdominant (5 steps below tonic)
+
+
+    FORM
+
+        structure; music as architecture in space and time; musical similarity leads to symmetry
+
+        large-scale repetition and contrast diagrammed as rhyme scheme, e.g. 'ABA' represents a form which returns to the opening phrase before closing (also called an arch or da capo form)
+
+        strophic - 'AAA..etc.' like a song with verses, or a hymn
+
+        through-composed - a form where repetition is indiscernible or overly intricate
+
+
+    TEXT/EXTRAMUSICALITY
+
+        use of words or other nonmusical ideas as essential part of piece vs. "absolute" music
+
