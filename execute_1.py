@@ -1,6 +1,6 @@
 import pandas as pd
 import scipy.io.wavfile as wavfile
-import audio_import
+from dataset_creation import chunks, extract_peaks_and_freqs, final_data_collection
 
 common_path = '/home/jacs/Documents/DataScience/Personal/song_similarity_audio/TinySOL/'
 df_into = pd.read_csv(common_path+'TinySOL_metadata.csv')
