@@ -105,7 +105,7 @@ def extract_peaks_and_freqs(aud, Fs):
 # from arbitrary audio files.
 
 def final_data_collection(freq_sorted, pikos_sorted, n, m, note_played):
-    df_final = pd.DataFrame({'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': m, 'note_played': []})
+    df_final = pd.DataFrame({'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
     frequs_sp = []
     for i in range(0,len(freq_sorted[:n])):
         freq_1, sp_1 = freq_sorted[i], pikos_sorted[i]
@@ -116,7 +116,7 @@ def final_data_collection(freq_sorted, pikos_sorted, n, m, note_played):
                 continue
             else:
                 distance = np.sqrt((freq_2 - freq_1)**2 + (sp_2 - sp_1)**2)
-                df_iteration = pd.DataFrame({'peak_1':[(freq_1, sp_1)], 'peak_2':[(freq_2, sp_2)], 'Magnitude difference': [distance] ,'instrument': 1, 'note_played': [note_played]})
+                df_iteration = pd.DataFrame({'peak_1':[(freq_1, sp_1)], 'peak_2':[(freq_2, sp_2)], 'Magnitude difference': [distance] ,'instrument': m, 'note_played': [note_played]})
                 df_final = df_final.append(df_iteration)
     return df_final
 

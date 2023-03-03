@@ -1,6 +1,7 @@
 import pandas as pd
 import scipy.io.wavfile as wavfile
 from dataset_creation import chunks, extract_peaks_and_freqs, final_data_collection
+from get_audio import obtain_youtube_link, delete_spaces, download_audio, remove_audio
 
 common_path = '/home/jacs/Documents/DataScience/Personal/song_similarity_audio/TinySOL/'
 df_into = pd.read_csv(common_path+'TinySOL_metadata.csv')
@@ -10,37 +11,41 @@ instruments = df_into['Instrument (in full)'].unique()
 instruments
 
 instruments_test = ['Trombone', 'Trumpet in C']
-
+outputs = ['database_trombone_10_peaks', 'database_trumpet_10_peaks']
 #audio_files = ['A-sharp-trumpet', 'B-trumpet', 'C-sharp-trumpet', 'D-sharp-trumpet', 'E-trumpet', 'F-sharp-trumpet', 'G-sharp-trumpet']
 
-df_final = pd.DataFrame({'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
+#for linko in links:
+#    title = download_audio(linko)
+#    remove_audio(title)
 
-i=0
-
-for woko in df_into[df_into['Instrument (in full)'] == 'Trumpet in C']['Path']:
-    wavo = common_path + woko
-    titulo = woko.split('/')[-1]
-#    file_1 = file.format(audio_1)
-#    wavo = path + file_1
-    Fs, audio = wavfile.read(wavo)
-    length = audio.shape[0] / Fs
-    audio_chunks = chunks(audio,int(length)*2)
-    print(f"length = {length}s")
-    for aud in audio_chunks[2:-2]:
-        length_2 = aud.shape[0] / Fs
-#        print(Fs)
-        # select left channel only
-        try:
-            aud = aud[:,0]
-            print('plop')
-        except:
-            aud = aud[:]
-            print('anti-plop')
-        pikos_sorted, freq_sorted, sp_final, peaks  = extract_peaks_and_freqs(aud, Fs)
-        print(i)
-        i+=1
-        df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, 1, titulo).reset_index(drop=True)
-        df_final = df_final.append(df_final_2).reset_index(drop=True)
+for kk in range(0,len(instruments_test)):
+    print(kk)
+    instrument_dataset = instruments_test[kk]
+    df_final = pd.DataFrame({'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
+    for woko in df_into[df_into['Instrument (in full)'] == instrument_dataset]['Path']:
+        wavo = common_path + woko
+        titulo = woko.split('/')[-1]
+        #    file_1 = file.format(audio_1)
+        #    wavo = path + file_1
+        Fs, audio = wavfile.read(wavo)
+        length = audio.shape[0] / Fs
+        audio_chunks = chunks(audio,int(length)*2)
+        print(f"length = {length}s")
+        for aud in audio_chunks[2:-2]:
+            length_2 = aud.shape[0] / Fs
+            #        print(Fs)
+            # select left channel only
+            try:
+                aud = aud[:,0]
+                print('plop')
+            except:
+                aud = aud[:]
+                print('anti-plop')
+            pikos_sorted, freq_sorted, sp_final, peaks  = extract_peaks_and_freqs(aud, Fs)
+            df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, titulo).reset_index(drop=True)
+            df_final = df_final.append(df_final_2).reset_index(drop=True)
+    df_final=df_final.reset_index(drop=True)
+    df_final.to_csv(outputs[kk]+'.csv', index=False)
 #################################
 #        plt.specgram(aud, Fs=Fs)
 #        plt.xticks(time_cnk)    
