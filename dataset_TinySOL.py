@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 import scipy.io.wavfile as wavfile
 from dataset_creation import chunks, extract_peaks_and_freqs, final_data_collection
 from get_audio_from_link import obtain_youtube_link, delete_spaces, download_audio, remove_audio
@@ -14,7 +15,6 @@ instruments = df_into['Instrument (in full)'].unique()
 instruments
 
 instruments_test = ['Trombone', 'Trumpet in C']
-outputs = ['trombone/database_trombone_10_peaks', 'trumpet/database_trumpet_10_peaks']
 #audio_files = ['A-sharp-trumpet', 'B-trumpet', 'C-sharp-trumpet', 'D-sharp-trumpet', 'E-trumpet', 'F-sharp-trumpet', 'G-sharp-trumpet']
 
 #for linko in links:
@@ -24,9 +24,15 @@ outputs = ['trombone/database_trombone_10_peaks', 'trumpet/database_trumpet_10_p
 for kk in range(0,len(instruments_test)):
     print(kk)
     instrument_dataset = instruments_test[kk]
+    instrument_folder = str((instrument_dataset.split()[0]).lower())+'/'
+    output_file = 'database_{}_10_peaks'.format(instrument_folder)
+    if not os.path.exists(common_path+output_path+instrument_folder):
+        os.makedirs(common_path+output_path+instrument_folder)
+        print('woba lubba')
+    print(instrument_folder)
     df_final = pd.DataFrame({'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
     for woko in df_into[df_into['Instrument (in full)'] == instrument_dataset]['Path']:
-        wavo = common_path + woko
+        wavo = common_path + input_path + woko
         titulo = woko.split('/')[-1]
         #    file_1 = file.format(audio_1)
         #    wavo = path + file_1
@@ -48,7 +54,7 @@ for kk in range(0,len(instruments_test)):
             df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, titulo).reset_index(drop=True)
             df_final = df_final.append(df_final_2).reset_index(drop=True)
     df_final=df_final.reset_index(drop=True)
-    df_final.to_csv(common_path+output_path+outputs[kk]+'.csv', index=False)
+    df_final.to_csv(common_path+output_path+instrument_folder+output_file+'.csv', index=False)
 #################################
 #        plt.specgram(aud, Fs=Fs)
 #        plt.xticks(time_cnk)    
