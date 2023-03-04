@@ -25,7 +25,7 @@ def obtain_youtube_link(busqueda, maxim_results):
 def delete_spaces(selected_video):
     title2 = selected_video.title
     title2 = re.sub("(\s)","_"," ".join(re.sub("(-)|(&)|(\[)|(\])","",title2).split()))
-    return title
+    return title2
 
 
 #######################################################
@@ -35,11 +35,21 @@ def download_audio(link):
     selected_video = YouTube(link)
     title = delete_spaces(selected_video)
     audio = selected_video.streams.filter(only_audio=True, file_extension='mp4').first()
-    audio.download(filename=title+'.wav')
+    audio.download(filename=title+'.mp4')
     return title
 
 #######################################################
+# Change audio format
+def from_mp4_to_wav(filename, inputdir):
+    for filename in os.listdir(inputdir):
+        actual_filename = filename[:-4]
+        if(filename.endswith(".mp4")):
+            os.system('ffmpeg -i {} -acodec pcm_s16le -ar 16000 {}.wav'.format(filename, actual_filename))
+        else:
+            continue
+#######################################################
+
 # To remove the audio from local file
 
 def remove_audio(title):
-    os.remove(title+'.wav')
+    os.remove(title)

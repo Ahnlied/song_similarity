@@ -1,17 +1,20 @@
 import pandas as pd
 import scipy.io.wavfile as wavfile
 from dataset_creation import chunks, extract_peaks_and_freqs, final_data_collection
-from get_audio import obtain_youtube_link, delete_spaces, download_audio, remove_audio
+from get_audio_from_link import obtain_youtube_link, delete_spaces, download_audio, remove_audio
 
-common_path = '/home/jacs/Documents/DataScience/Personal/song_similarity_audio/TinySOL/'
-df_into = pd.read_csv(common_path+'TinySOL_metadata.csv')
+common_path = '/home/jacs/Documents/DataScience/Personal/'
+input_path = 'song_similarity_audio/TinySOL/'
+output_path = 'song_similarity_audio/'
+
+df_into = pd.read_csv(common_path+input_path+'TinySOL_metadata.csv')
 df_into= df_into[df_into['Needed digital retuning']]
 instruments = df_into['Instrument (in full)'].unique()
 
 instruments
 
 instruments_test = ['Trombone', 'Trumpet in C']
-outputs = ['database_trombone_10_peaks', 'database_trumpet_10_peaks']
+outputs = ['trombone/database_trombone_10_peaks', 'trumpet/database_trumpet_10_peaks']
 #audio_files = ['A-sharp-trumpet', 'B-trumpet', 'C-sharp-trumpet', 'D-sharp-trumpet', 'E-trumpet', 'F-sharp-trumpet', 'G-sharp-trumpet']
 
 #for linko in links:
@@ -45,7 +48,7 @@ for kk in range(0,len(instruments_test)):
             df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, titulo).reset_index(drop=True)
             df_final = df_final.append(df_final_2).reset_index(drop=True)
     df_final=df_final.reset_index(drop=True)
-    df_final.to_csv(outputs[kk]+'.csv', index=False)
+    df_final.to_csv(common_path+output_path+outputs[kk]+'.csv', index=False)
 #################################
 #        plt.specgram(aud, Fs=Fs)
 #        plt.xticks(time_cnk)    
