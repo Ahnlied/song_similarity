@@ -1,5 +1,6 @@
 import pandas as pd
 import scipy.io.wavfile as wavfile
+import re
 from dataset_creation import chunks, extract_peaks_and_freqs, final_data_collection
 from get_audio_from_link import obtain_youtube_link, delete_spaces, download_audio, remove_audio, from_mp4_to_wav
 
@@ -20,8 +21,8 @@ print(df_links)
 links_audio = list(df_links['youtube_links'])
 titles = list(df_links['title'])
 
-range_1 = str(df_links['from'])
-range_2 = str(df_links['to'])
+range_1 = str(df_links['from'].iloc[0])
+range_2 = str(df_links['to'].iloc[0])
 
 print(type(range_1))
 print(range_1)
@@ -30,13 +31,17 @@ print(range_2)
 
 def min_to_sec(number):
     number = str(number).split(':')
+    print(number)
     number = int(number[0])*60 + int(number[1])
     return number
 
 def audio_partition(audio, Fs, range_1, range_2):
-    if range_1=='' and range_2=='':
+    if range_1=='begin' and range_2=='end':
         range_1='0:00'
-        range_2= str(audio.shape[0]/Fs).replace('.',':')
+        range_2_min = str(int((audio.shape[0]/Fs)/60))
+        range_2_seg = str(int((audio.shape[0]/Fs)%60))
+        range_2 = range_2_min+':'+range_2_seg
+        print(range_2)
     length = audio.shape[0]/Fs
     range_1_index = int(min_to_sec(range_1)*Fs)
     range_2_index = int(min_to_sec(range_2)*Fs)
@@ -49,8 +54,6 @@ def main():
         title_file = str(download_audio(linko))
         database_name = str(titles[kk])
         df_final = pd.DataFrame({'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
-        print(title_file)
-        print(database_name)
         try:
             Fs, audio = wavfile.read(title_file+'.wav')
         except:
