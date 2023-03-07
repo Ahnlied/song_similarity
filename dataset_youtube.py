@@ -20,38 +20,66 @@ print(df_links)
 links_audio = list(df_links['youtube_links'])
 titles = list(df_links['title'])
 
-for kk in range(0,len(links_audio)):
-    linko = links_audio[kk]
-    title_file = str(download_audio(linko))
-    database_name = str(titles[kk])
-    df_final = pd.DataFrame({'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
-    print(title_file)
-    print(database_name)
-    try:
-        Fs, audio = wavfile.read(title_file+'.wav')
-    except:
-        from_mp4_to_wav(title_file+'.mp4',common_path+dummy_path)
-        Fs, audio = wavfile.read(title_file+'.wav')
-        remove_audio(title_file+'.mp4')
-    length = audio.shape[0] / Fs
-    audio_chunks = chunks(audio,int(length)*2)
-    print(f"length = {length}s")
-    for aud in audio_chunks[2:-2]:
-        length_2 = aud.shape[0] / Fs
-        #        print(Fs)
-        # select left channel only
+range_1 = str(df_links['from'])
+range_2 = str(df_links['to'])
+
+print(type(range_1))
+print(range_1)
+print(type(range_2))
+print(range_2)
+
+def min_to_sec(number):
+    number = str(number).split(':')
+    number = int(number[0])*60 + int(number[1])
+    return number
+
+def audio_partition(audio, Fs, range_1, range_2):
+    if range_1=='' and range_2=='':
+        range_1='0:00'
+        range_2= str(audio.shape[0]/Fs).replace('.',':')
+    length = audio.shape[0]/Fs
+    range_1_index = int(min_to_sec(range_1)*Fs)
+    range_2_index = int(min_to_sec(range_2)*Fs)
+    audio_cut = audio[range_1_index:range_2_index]
+    return audio_cut
+
+def main():
+    for kk in range(0,len(links_audio)):
+        linko = links_audio[kk]
+        title_file = str(download_audio(linko))
+        database_name = str(titles[kk])
+        df_final = pd.DataFrame({'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
+        print(title_file)
+        print(database_name)
         try:
-            aud = aud[:,0]
-            print('plop')
+            Fs, audio = wavfile.read(title_file+'.wav')
         except:
-            aud = aud[:]
-        print('anti-plop')
-        pikos_sorted, freq_sorted, sp_final, peaks  = extract_peaks_and_freqs(aud, Fs)
-        df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, title_file).reset_index(drop=True)
-        df_final = df_final.append(df_final_2).reset_index(drop=True)
-    df_final=df_final.reset_index(drop=True)
-    df_final.to_csv(common_path+input_path+database_name+'.csv', index=False)
-remove_audio(title_file+'.wav')
+            from_mp4_to_wav(title_file+'.mp4',common_path+dummy_path)
+            Fs, audio = wavfile.read(title_file+'.wav')
+            remove_audio(title_file+'.mp4')
+        length = audio.shape[0] / Fs
+        audio = audio_partition(audio, Fs, range_1, range_2)
+        audio_chunks = chunks(audio,int(length)*2)
+        print(f"length = {length}s")
+        for aud in audio_chunks[2:-2]:
+            length_2 = aud.shape[0] / Fs
+            #        print(Fs)
+            # select left channel only
+            try:
+                aud = aud[:,0]
+                print('plop')
+            except:
+                aud = aud[:]
+            print('anti-plop')
+            pikos_sorted, freq_sorted, sp_final, peaks  = extract_peaks_and_freqs(aud, Fs)
+            df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, title_file).reset_index(drop=True)
+            df_final = df_final.append(df_final_2).reset_index(drop=True)
+            df_final=df_final.reset_index(drop=True)
+        df_final.to_csv(common_path+input_path+database_name+'.csv', index=False)
+
+if __name__ == '__main__':
+    main()
+    remove_audio(title_file+'.wav')
     
 #################################
 #        plt.specgram(aud, Fs=Fs)

@@ -21,40 +21,46 @@ instruments_test = ['Trombone', 'Trumpet in C']
 #    title = download_audio(linko)
 #    remove_audio(title)
 
-for kk in range(0,len(instruments_test)):
-    print(kk)
-    instrument_dataset = instruments_test[kk]
-    instrument_folder = str((instrument_dataset.split()[0]).lower())+'/'
-    output_file = 'database_{}_10_peaks'.format(instrument_folder)
-    if not os.path.exists(common_path+output_path+instrument_folder):
-        os.makedirs(common_path+output_path+instrument_folder)
-        print('woba lubba')
-    print(instrument_folder)
-    df_final = pd.DataFrame({'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
-    for woko in df_into[df_into['Instrument (in full)'] == instrument_dataset]['Path']:
-        wavo = common_path + input_path + woko
-        titulo = woko.split('/')[-1]
-        #    file_1 = file.format(audio_1)
-        #    wavo = path + file_1
-        Fs, audio = wavfile.read(wavo)
-        length = audio.shape[0] / Fs
-        audio_chunks = chunks(audio,int(length)*2)
-        print(f"length = {length}s")
-        for aud in audio_chunks[2:-2]:
-            length_2 = aud.shape[0] / Fs
-            #        print(Fs)
-            # select left channel only
-            try:
-                aud = aud[:,0]
-                print('plop')
-            except:
-                aud = aud[:]
-                print('anti-plop')
-            pikos_sorted, freq_sorted, sp_final, peaks  = extract_peaks_and_freqs(aud, Fs)
-            df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, titulo).reset_index(drop=True)
-            df_final = df_final.append(df_final_2).reset_index(drop=True)
-    df_final=df_final.reset_index(drop=True)
-    df_final.to_csv(common_path+output_path+instrument_folder+output_file+'.csv', index=False)
+def main():
+    for kk in range(0,len(instruments_test)):
+        print(kk)
+        instrument_dataset = instruments_test[kk]
+        instrument_folder = str((instrument_dataset.split()[0]).lower())+'/'
+        output_file = 'database_{}_10_peaks'.format(instrument_folder)
+        if not os.path.exists(common_path+output_path+instrument_folder):
+            os.makedirs(common_path+output_path+instrument_folder)
+            print('woba lubba')
+        print(instrument_folder)
+        df_final = pd.DataFrame({'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
+        for woko in df_into[df_into['Instrument (in full)'] == instrument_dataset]['Path']:
+            wavo = common_path + input_path + woko
+            titulo = woko.split('/')[-1]
+            #    file_1 = file.format(audio_1)
+            #    wavo = path + file_1
+            Fs, audio = wavfile.read(wavo)
+            length = audio.shape[0] / Fs
+            audio_chunks = chunks(audio,int(length)*2)
+            print(f"length = {length}s")
+            for aud in audio_chunks[2:-2]:
+                length_2 = aud.shape[0] / Fs
+                #        print(Fs)
+                # select left channel only
+                try:
+                    aud = aud[:,0]
+                    print('plop')
+                except:
+                    aud = aud[:]
+                    print('anti-plop')
+                pikos_sorted, freq_sorted, sp_final, peaks  = extract_peaks_and_freqs(aud, Fs)
+                df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, titulo).reset_index(drop=True)
+                df_final = df_final.append(df_final_2).reset_index(drop=True)
+            df_final=df_final.reset_index(drop=True)
+        df_final.to_csv(common_path+output_path+instrument_folder+output_file+'.csv', index=False)
+
+if __name__ == '__main__':
+    main()
+
+    
 #################################
 #        plt.specgram(aud, Fs=Fs)
 #        plt.xticks(time_cnk)    
