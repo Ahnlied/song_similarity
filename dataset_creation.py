@@ -117,7 +117,7 @@ def final_data_collection(freq_sorted, pikos_sorted, n, m, note_played):
             else:
                 distance = np.sqrt((freq_2 - freq_1)**2 + (sp_2 - sp_1)**2)
                 df_iteration = pd.DataFrame({'peak_1':[(freq_1, sp_1)], 'peak_2':[(freq_2, sp_2)], 'Magnitude difference': [distance] ,'instrument': m, 'note_played': [note_played]})
-                df_final = df_final.append(df_iteration)
+                df_final = pd.concat((df_final,df_iteration), axis=0)
     return df_final
 
 #######################################################################

@@ -18,17 +18,6 @@ df_links = pd.read_csv(common_path+input_path+'trumpet_youtube_database_enrichme
 
 print(df_links)
 
-links_audio = list(df_links['youtube_links'])
-titles = list(df_links['title'])
-
-range_1 = str(df_links['from'].iloc[0])
-range_2 = str(df_links['to'].iloc[0])
-
-print(type(range_1))
-print(range_1)
-print(type(range_2))
-print(range_2)
-
 def min_to_sec(number):
     number = str(number).split(':')
     print(number)
@@ -36,8 +25,9 @@ def min_to_sec(number):
     return number
 
 def audio_partition(audio, Fs, range_1, range_2):
-    if range_1=='begin' and range_2=='end':
+    if range_1=='begin':
         range_1='0:00'
+    if  range_2=='end':
         range_2_min = str(int((audio.shape[0]/Fs)/60))
         range_2_seg = str(int((audio.shape[0]/Fs)%60))
         range_2 = range_2_min+':'+range_2_seg
@@ -50,6 +40,9 @@ def audio_partition(audio, Fs, range_1, range_2):
 
 def main():
     for kk in range(0,len(links_audio)):
+        range_1 = str(df_links['from'].iloc[kk])
+        range_2 = str(df_links['to'].iloc[kk])
+        print(range_1,range_2)
         linko = links_audio[kk]
         title_file = str(download_audio(linko))
         database_name = str(titles[kk])
@@ -76,13 +69,16 @@ def main():
             print('anti-plop')
             pikos_sorted, freq_sorted, sp_final, peaks  = extract_peaks_and_freqs(aud, Fs)
             df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, title_file).reset_index(drop=True)
-            df_final = df_final.append(df_final_2).reset_index(drop=True)
+            df_final = pd.concat((df_final,df_final_2), axis=0).reset_index(drop=True)
             df_final=df_final.reset_index(drop=True)
         df_final.to_csv(common_path+input_path+database_name+'.csv', index=False)
+        remove_audio(title_file+'.wav')
 
+links_audio = list(df_links['youtube_links'])
+titles = list(df_links['title'])
+        
 if __name__ == '__main__':
     main()
-    remove_audio(title_file+'.wav')
     
 #################################
 #        plt.specgram(aud, Fs=Fs)

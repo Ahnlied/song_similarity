@@ -53,7 +53,7 @@ def main():
                     print('anti-plop')
                 pikos_sorted, freq_sorted, sp_final, peaks  = extract_peaks_and_freqs(aud, Fs)
                 df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, titulo).reset_index(drop=True)
-                df_final = df_final.append(df_final_2).reset_index(drop=True)
+                df_final = pd.concat((df_final,df_final_2),axis=0).reset_index(drop=True)
             df_final=df_final.reset_index(drop=True)
         df_final.to_csv(common_path+output_path+instrument_folder+output_file+'.csv', index=False)
 
