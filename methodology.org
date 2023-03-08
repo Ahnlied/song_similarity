@@ -95,3 +95,9 @@ Reference article - https://www.mdpi.com/2079-9292/11/9/1405/htm
 * Modularity:
 - Make a script that creates a data set of an input Youtube link. Make it so it can run in a terminal (this one is to run with the final model).
 - Create another similar script which takes a reference Youtube link and append its output to the training dataset.
+
+* Noise reduction:
+
+- Find relations between original signal and noise. Simulate noise and add it to the single notes played.
+  It would be nice to insolate and identify the instrument from a whole song an identify the signal-noise ratio.
+- With this we would be able to isolate the peaks from the instrument from the background noise.
