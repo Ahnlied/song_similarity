@@ -31,7 +31,9 @@ def main():
             os.makedirs(common_path+output_path+instrument_folder)
             print('woba lubba')
         print(instrument_folder)
-        df_final = pd.DataFrame({'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
+        df_final = pd.DataFrame({'index': [], 'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
+        #### indexoo is the index per window of peaks, 1 window corresponds to 45 peaks relations
+        indexoo = 0
         for woko in df_into[df_into['Instrument (in full)'] == instrument_dataset]['Path']:
             wavo = common_path + input_path + woko
             titulo = woko.split('/')[-1]
@@ -52,8 +54,9 @@ def main():
                     aud = aud[:]
                     print('anti-plop')
                 pikos_sorted, freq_sorted, sp_final, peaks  = extract_peaks_and_freqs(aud, Fs)
-                df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, titulo).reset_index(drop=True)
+                df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, titulo, indexoo).reset_index(drop=True)
                 df_final = pd.concat((df_final,df_final_2),axis=0).reset_index(drop=True)
+                indexoo += 1
             df_final=df_final.reset_index(drop=True)
         df_final.to_csv(common_path+output_path+instrument_folder+output_file+'.csv', index=False)
 

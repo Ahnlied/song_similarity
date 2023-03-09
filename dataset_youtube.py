@@ -40,13 +40,14 @@ def audio_partition(audio, Fs, range_1, range_2):
 
 def main():
     for kk in range(0,len(links_audio)):
+        indexoo = 0
         range_1 = str(df_links['from'].iloc[kk])
         range_2 = str(df_links['to'].iloc[kk])
         print(range_1,range_2)
         linko = links_audio[kk]
         title_file = str(download_audio(linko))
         database_name = str(titles[kk])
-        df_final = pd.DataFrame({'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
+        df_final = pd.DataFrame({'index':[], 'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
         try:
             Fs, audio = wavfile.read(title_file+'.wav')
         except:
@@ -68,9 +69,10 @@ def main():
                 aud = aud[:]
             print('anti-plop')
             pikos_sorted, freq_sorted, sp_final, peaks  = extract_peaks_and_freqs(aud, Fs)
-            df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, title_file).reset_index(drop=True)
+            df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, title_file, indexoo).reset_index(drop=True)
             df_final = pd.concat((df_final,df_final_2), axis=0).reset_index(drop=True)
             df_final=df_final.reset_index(drop=True)
+            indexoo += 1
         df_final.to_csv(common_path+input_path+database_name+'.csv', index=False)
         remove_audio(title_file+'.wav')
 
