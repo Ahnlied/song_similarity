@@ -90,6 +90,7 @@ Elaborar una base de datos y un modelo que detecte las notas aisladas de cada in
 * Important Links:
 TinySOL Database - https://zenodo.org/record/3685367#.XnFp5i2h1IU%22 
 Reference article - https://www.mdpi.com/2079-9292/11/9/1405/htm
+Mathematical reference example - https://doi.org/10.1016/j.ejor.2022.05.008
 
 
 * Modularity:
