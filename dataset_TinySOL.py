@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import re
 import scipy.io.wavfile as wavfile
 from dataset_creation import chunks, extract_peaks_and_freqs, final_data_collection
 from get_audio_from_link import obtain_youtube_link, delete_spaces, download_audio, remove_audio
@@ -12,9 +13,9 @@ df_into = pd.read_csv(common_path+input_path+'TinySOL_metadata.csv')
 df_into= df_into[df_into['Needed digital retuning']]
 instruments = df_into['Instrument (in full)'].unique()
 
-instruments
+print(instruments)
 
-instruments_test = ['Trombone', 'Trumpet in C']
+#instruments_test = ['Trombone', 'Trumpet in C']
 #audio_files = ['A-sharp-trumpet', 'B-trumpet', 'C-sharp-trumpet', 'D-sharp-trumpet', 'E-trumpet', 'F-sharp-trumpet', 'G-sharp-trumpet']
 
 #for linko in links:
@@ -22,11 +23,14 @@ instruments_test = ['Trombone', 'Trumpet in C']
 #    remove_audio(title)
 
 def main():
-    for kk in range(0,len(instruments_test)):
+    for kk in range(0,len(instruments)):
         print(kk)
-        instrument_dataset = instruments_test[kk]
-        instrument_folder = str((instrument_dataset.split()[0]).lower())+'/'
+        instrument_dataset = instruments[kk]
+        print(instrument_dataset)
+        instrument_folder = re.sub(' ','_',str(instrument_dataset)).lower()#+'/'
+        print(instrument_folder)
         output_file = 'database_{}_10_peaks'.format(instrument_folder)
+        print(output_file)
         if not os.path.exists(common_path+output_path+instrument_folder):
             os.makedirs(common_path+output_path+instrument_folder)
             print('woba lubba')
@@ -58,7 +62,7 @@ def main():
                 df_final = pd.concat((df_final,df_final_2),axis=0).reset_index(drop=True)
                 indexoo += 1
             df_final=df_final.reset_index(drop=True)
-        df_final.to_csv(common_path+output_path+instrument_folder+output_file+'.csv', index=False)
+        df_final.to_csv(common_path+output_path+instrument_folder+'/'+output_file+'.csv', index=False)
 
 if __name__ == '__main__':
     main()

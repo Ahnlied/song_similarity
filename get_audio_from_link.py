@@ -24,6 +24,8 @@ def obtain_youtube_link(busqueda, maxim_results):
 
 def delete_spaces(selected_video):
     title2 = selected_video.title
+    title2 = re.sub("[)'!?/(]","",title2)
+    title2 = re.sub('"',"",title2)
     title2 = re.sub("(\s)","_"," ".join(re.sub("(-)|(&)|(\[)|(\])","",title2).split()))
     return title2
 
