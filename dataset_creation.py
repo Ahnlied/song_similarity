@@ -121,3 +121,15 @@ def final_data_collection(freq_sorted, pikos_sorted, n, m, note_played, indexo):
     return df_final
 
 #######################################################################
+# This dataset is to only consider the (freq,peak) relation
+# n: number of peaks
+# m: index of the instrument
+
+def data_collection_only_peaks(freq_sorted, pikos_sorted, n, m, note_played, indexo):
+#    df_final = pd.DataFrame({'index':[], 'peaks': [],'instrument': [], 'note_played': []})
+    freq_peaks = []
+    for i in range(0,n):
+        freq_peaks.append((freq_sorted[i],pikos_sorted[i]))
+    df_iteration = pd.DataFrame({'index': indexo, 'peaks':[freq_peaks],'instrument': m, 'note_played': [note_played]})
+#    df_final = pd.concat((df_final,df_iteration), axis=0)
+    return df_iteration

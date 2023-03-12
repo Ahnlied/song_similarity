@@ -1,22 +1,21 @@
 import pandas as pd
 import scipy.io.wavfile as wavfile
 import re
-from dataset_creation import chunks, extract_peaks_and_freqs, final_data_collection
+from dataset_creation import chunks, extract_peaks_and_freqs, final_data_collection, data_collection_only_peaks
 from get_audio_from_link import obtain_youtube_link, delete_spaces, download_audio, remove_audio, from_mp4_to_wav
 
 common_path = '/home/jacs/Documents/DataScience/Personal/'
 
+input_path= 'song_similarity_audio/'
+
 dummy_path = 'song_similarity/'
+
 # As an input there is going to be a list of youtube links that contain audio that can be
 # usefull to expand and enrich the database of that particular instrument
 
 # As an input we want a tupple, with the link as first position and instrument as second position
 
-input_path = 'song_similarity_audio/trumpet/'
-
-df_links = pd.read_csv(common_path+input_path+'trumpet_youtube_database_enrichment.csv')
-
-print(df_links)
+instruments = ['Bass Tuba','French Horn','Trombone','Trumpet in C','Accordion','Cello','Contrabass','Viola','Violin','Alto Saxophone','Bassoon','Clarinet in Bb','Flute','Oboe','Guitar','Electric guitar','Acoustic guitar','Bass guitar','Tapping','Steelpan','Percussion', 'Drum and bass']
 
 def min_to_sec(number):
     number = str(number).split(':')
@@ -45,9 +44,13 @@ def main():
         range_2 = str(df_links['to'].iloc[kk])
         print(range_1,range_2)
         linko = links_audio[kk]
-        title_file = str(download_audio(linko))
+        try:
+            title_file = str(download_audio(linko))
+        except:
+            continue
         database_name = str(titles[kk])
-        df_final = pd.DataFrame({'index':[], 'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
+#        df_final = pd.DataFrame({'index':[], 'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
+        df_final = pd.DataFrame({'index':[], 'peaks': [], 'instrument': [], 'note_played': []})
         try:
             Fs, audio = wavfile.read(title_file+'.wav')
         except:
@@ -72,19 +75,23 @@ def main():
                 pikos_sorted, freq_sorted, sp_final, peaks  = extract_peaks_and_freqs(aud, Fs)
             except:
                 continue
-            df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, title_file, indexoo).reset_index(drop=True)
+#            df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, title_file, indexoo).reset_index(drop=True)
+            df_final_2 = data_collection_only_peaks(freq_sorted, pikos_sorted, 10, kk, title_file, indexoo).reset_index(drop=True)
             df_final = pd.concat((df_final,df_final_2), axis=0).reset_index(drop=True)
-#            df_final=df_final.reset_index(drop=True)
             indexoo += 1
 #        df_final = df_final.drop_duplicates().reset_index(drop=True)
-        df_final.to_csv(common_path+input_path+database_name+'.csv', index=False)
+        df_final.to_csv(common_path+input_path+instrument_folder+'/'+database_name+'.csv', index=False)
         remove_audio(title_file+'.wav')
-
-links_audio = list(df_links['youtube_links'])
-titles = list(df_links['title'])
         
 if __name__ == '__main__':
-    main()
+    for kk in range(0,len(instruments)):
+        instrument = instruments[kk]
+        print(instrument)
+        instrument_folder = re.sub(' ','_',str(instrument)).lower()#+'/'
+        df_links = pd.read_csv(common_path+input_path+instrument_folder+'/'+'{}_youtube_database_enrichment.csv'.format(instrument_folder))
+        links_audio = list(df_links['youtube_links'])
+        titles = list(df_links['title'])
+        main()
     
 #################################
 #        plt.specgram(aud, Fs=Fs)
