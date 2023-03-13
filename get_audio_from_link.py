@@ -24,9 +24,12 @@ def obtain_youtube_link(busqueda, maxim_results):
 
 def delete_spaces(selected_video):
     title2 = selected_video.title
-    title2 = re.sub("[)'!?/(]","",title2)
+    title2 = re.sub("[)'!?/:;,(]","",title2)
+#    title2 = re.sub(".","",title2)
+#    title2 = re.sub("°","",title2)
     title2 = re.sub('"',"",title2)
     title2 = re.sub("(\s)","_"," ".join(re.sub("(-)|(&)|(\[)|(\])","",title2).split()))
+    print(title2)
     return title2
 
 
@@ -37,8 +40,11 @@ def download_audio(link):
     selected_video = YouTube(link)
     title = delete_spaces(selected_video)
     audio = selected_video.streams.filter(only_audio=True, file_extension='mp4').first()
-    audio.download(filename=title+'.mp4')
-    return title
+    if selected_video.length <= 300:
+        audio.download(filename=title+'.mp4')
+        return title
+    else:
+        raise ValueError("Arguments have different lengths!")
 
 #######################################################
 # Change audio format

@@ -1,6 +1,7 @@
 import pandas as pd
 import scipy.io.wavfile as wavfile
 import re
+import os
 from dataset_creation import chunks, extract_peaks_and_freqs, final_data_collection, data_collection_only_peaks
 from get_audio_from_link import obtain_youtube_link, delete_spaces, download_audio, remove_audio, from_mp4_to_wav
 
@@ -39,49 +40,57 @@ def audio_partition(audio, Fs, range_1, range_2):
 
 def main():
     for kk in range(0,len(links_audio)):
-        indexoo = 0
-        range_1 = str(df_links['from'].iloc[kk])
-        range_2 = str(df_links['to'].iloc[kk])
-        print(range_1,range_2)
-        linko = links_audio[kk]
-        try:
-            title_file = str(download_audio(linko))
-        except:
-            continue
         database_name = str(titles[kk])
-#        df_final = pd.DataFrame({'index':[], 'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
-        df_final = pd.DataFrame({'index':[], 'peaks': [], 'instrument': [], 'note_played': []})
-        try:
-            Fs, audio = wavfile.read(title_file+'.wav')
-        except:
-            from_mp4_to_wav(title_file+'.mp4',common_path+dummy_path)
-            Fs, audio = wavfile.read(title_file+'.wav')
-            remove_audio(title_file+'.mp4')
-        length = audio.shape[0] / Fs
-        audio = audio_partition(audio, Fs, range_1, range_2)
-        audio_chunks = chunks(audio,int(length)*2)
-        print(f"length = {length}s")
-        for aud in audio_chunks[2:-2]:
-            length_2 = aud.shape[0] / Fs
-            #        print(Fs)
-            # select left channel only
+        if not os.path.exists(common_path+input_path+instrument_folder+'/'+database_name+'.csv'):
+            indexoo = 0
+            range_1 = str(df_links['from'].iloc[kk])
+            range_2 = str(df_links['to'].iloc[kk])
+            print(range_1,range_2)
+            linko = links_audio[kk]
             try:
-                aud = aud[:,0]
-                print('plop')
+                title_file = str(download_audio(linko))
+                print(kk)#,title_file)
             except:
-                aud = aud[:]
-                print('anti-plop')
-            try:
-                pikos_sorted, freq_sorted, sp_final, peaks  = extract_peaks_and_freqs(aud, Fs)
-            except:
+                print(kk,"titulo raro")
                 continue
-#            df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, title_file, indexoo).reset_index(drop=True)
-            df_final_2 = data_collection_only_peaks(freq_sorted, pikos_sorted, 10, kk, title_file, indexoo).reset_index(drop=True)
-            df_final = pd.concat((df_final,df_final_2), axis=0).reset_index(drop=True)
-            indexoo += 1
-#        df_final = df_final.drop_duplicates().reset_index(drop=True)
-        df_final.to_csv(common_path+input_path+instrument_folder+'/'+database_name+'.csv', index=False)
-        remove_audio(title_file+'.wav')
+            #        df_final = pd.DataFrame({'index':[], 'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
+            df_final = pd.DataFrame({'index':[], 'peaks': [], 'instrument': [], 'note_played': []})
+            try:
+                Fs, audio = wavfile.read(title_file+'.wav')
+            except:
+                from_mp4_to_wav(title_file+'.mp4',common_path+dummy_path)
+                Fs, audio = wavfile.read(title_file+'.wav')
+                remove_audio(title_file+'.mp4')
+            length = audio.shape[0] / Fs
+#            print(len(audio), Fs)
+            audio = audio_partition(audio, Fs, range_1, range_2)
+#            print(len(audio), Fs)
+            audio_chunks = chunks(audio,int(length)*2)
+            print(f"length = {length}s")
+            for aud in audio_chunks[2:-2]:
+                length_2 = aud.shape[0] / Fs
+                #        print(Fs)
+                # select left channel only
+                try:
+                    aud = aud[:,0]
+#                    print('plop')
+                except:
+                    aud = aud[:]
+#                    print('anti-plop')
+                try:
+                    pikos_sorted, freq_sorted, sp_final, peaks  = extract_peaks_and_freqs(aud, Fs)
+                    df_final_2 = data_collection_only_peaks(freq_sorted, pikos_sorted, 20, kk, title_file, indexoo).reset_index(drop=True)
+                    df_final = pd.concat((df_final,df_final_2), axis=0).reset_index(drop=True)
+                except:
+                    print("error con dimensiones de los pikos")
+                    continue
+                indexoo += 1
+            #            df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, title_file, indexoo).reset_index(drop=True)
+            #        df_final = df_final.drop_duplicates().reset_index(drop=True)
+            df_final.to_csv(common_path+input_path+instrument_folder+'/'+database_name+'.csv', index=False)
+            remove_audio(title_file+'.wav')
+        else:
+            print(kk,"ya existe, we")
         
 if __name__ == '__main__':
     for kk in range(0,len(instruments)):

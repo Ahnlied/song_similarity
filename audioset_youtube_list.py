@@ -53,5 +53,5 @@ for dataset in audioset:
         eval1 = df_eval[df_eval['positive_labels'].apply(lambda x: len(set(instruments_to_audioset[instrument]) &  set(x)) > 0)]
         eval1 = audioset_to_enrichment(eval1).reset_index(drop=True)
         eval1['title'] = range(0,len(eval1))
-        eval1['title'] =eval1['title'].apply(lambda x: 'database_{}_10_peaks_youtube_'.format(instrument_folder)+str(x))
+        eval1['title'] =eval1['title'].apply(lambda x: 'database_{}_20_peaks_youtube_'.format(instrument_folder)+str(x))
         eval1.to_csv(common_path+output_path+instrument_folder+'/'+output_file+'.csv', index=False)
