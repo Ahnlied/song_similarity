@@ -26,11 +26,8 @@ def main():
     for kk in range(0,len(instruments)):
         print(kk)
         instrument_dataset = instruments[kk]
-        print(instrument_dataset)
         instrument_folder = re.sub(' ','_',str(instrument_dataset)).lower()#+'/'
-        print(instrument_folder)
         output_file = 'database_{}_20_peaks'.format(instrument_folder)
-        print(output_file)
         if not os.path.exists(common_path+output_path+instrument_folder):
             os.makedirs(common_path+output_path+instrument_folder)
             print('woba lubba')
@@ -54,16 +51,17 @@ def main():
                 # select left channel only
                 try:
                     aud = aud[:,0]
-                    print('plop')
+#                    print('plop')
                 except:
                     aud = aud[:]
-                    print('anti-plop')
+#                    print('anti-plop')
                 pikos_sorted, freq_sorted, sp_final, peaks  = extract_peaks_and_freqs(aud, Fs)
 #                df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, titulo, indexoo).reset_index(drop=True)
                 df_final_2 = data_collection_only_peaks(freq_sorted, pikos_sorted, 20, kk, titulo, indexoo).reset_index(drop=True)
                 df_final = pd.concat((df_final,df_final_2),axis=0).reset_index(drop=True)
                 indexoo += 1
             df_final=df_final.reset_index(drop=True)
+        print(instrument_dataset)
         df_final.to_csv(common_path+output_path+instrument_folder+'/'+output_file+'.csv', index=False)
 
 if __name__ == '__main__':

@@ -11,6 +11,8 @@ input_path= 'song_similarity_audio/'
 
 dummy_path = 'song_similarity/'
 
+lapse = 10
+
 # As an input there is going to be a list of youtube links that contain audio that can be
 # usefull to expand and enrich the database of that particular instrument
 
@@ -20,7 +22,6 @@ instruments = ['Bass Tuba','French Horn','Trombone','Trumpet in C','Accordion','
 
 def min_to_sec(number):
     number = str(number).split(':')
-    print(number)
     number = int(number[0])*60 + int(number[1])
     return number
 
@@ -31,14 +32,13 @@ def audio_partition(audio, Fs, range_1, range_2):
         range_2_min = str(int((audio.shape[0]/Fs)/60))
         range_2_seg = str(int((audio.shape[0]/Fs)%60))
         range_2 = range_2_min+':'+range_2_seg
-        print(range_2)
     length = audio.shape[0]/Fs
     range_1_index = int(min_to_sec(range_1)*Fs)
     range_2_index = int(min_to_sec(range_2)*Fs)
     audio_cut = audio[range_1_index:range_2_index]
     return audio_cut
 
-def main():
+def main(lapse):
     for kk in range(0,len(links_audio)):
         database_name = str(titles[kk])
         if not os.path.exists(common_path+input_path+instrument_folder+'/'+database_name+'.csv'):
@@ -49,9 +49,9 @@ def main():
             linko = links_audio[kk]
             try:
                 title_file = str(download_audio(linko))
-                print(kk)#,title_file)
+                print(instrument,kk)#,title_file)
             except:
-                print(kk,"titulo raro")
+                print(instrument,kk,"titulo raro")
                 continue
             #        df_final = pd.DataFrame({'index':[], 'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
             df_final = pd.DataFrame({'index':[], 'peaks': [], 'instrument': [], 'note_played': []})
@@ -65,7 +65,7 @@ def main():
 #            print(len(audio), Fs)
             audio = audio_partition(audio, Fs, range_1, range_2)
 #            print(len(audio), Fs)
-            audio_chunks = chunks(audio,int(length)*2)
+            audio_chunks = chunks(audio,lapse*2)
             print(f"length = {length}s")
             for aud in audio_chunks[2:-2]:
                 length_2 = aud.shape[0] / Fs
@@ -90,17 +90,18 @@ def main():
             df_final.to_csv(common_path+input_path+instrument_folder+'/'+database_name+'.csv', index=False)
             remove_audio(title_file+'.wav')
         else:
-            print(kk,"ya existe, we")
+            print(instrument,kk,"ya existe, we")
         
 if __name__ == '__main__':
-    for kk in range(0,len(instruments)):
-        instrument = instruments[kk]
-        print(instrument)
+    for pp in range(0,len(instruments)):
+        instrument = instruments[pp]
+#        print(instrument)
         instrument_folder = re.sub(' ','_',str(instrument)).lower()#+'/'
         df_links = pd.read_csv(common_path+input_path+instrument_folder+'/'+'{}_youtube_database_enrichment.csv'.format(instrument_folder))
         links_audio = list(df_links['youtube_links'])
+#        print(instrument,len(links_audio))
         titles = list(df_links['title'])
-        main()
+        main(lapse)
     
 #################################
 #        plt.specgram(aud, Fs=Fs)
