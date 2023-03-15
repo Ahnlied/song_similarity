@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import scipy
 # for dataframe manipulation
 import pandas as pd
+#######
+import librosa
 
 ####### GET top records
 #top_2_idx = np.argsort(sp)[-40:]
@@ -132,4 +134,22 @@ def data_collection_only_peaks(freq_sorted, pikos_sorted, n, m, note_played, ind
         freq_peaks.append((freq_sorted[i],pikos_sorted[i]))
     df_iteration = pd.DataFrame({'index': indexo, 'peaks':[freq_peaks],'instrument': m, 'note_played': [note_played]})
 #    df_final = pd.concat((df_final,df_iteration), axis=0)
+    return df_iteration
+
+
+#######################################################################
+# Mel-frequency cepstrum: encapsulates the timbre of a sound performed by either a voice or an instrument
+# this function gets the first 10 coefficients of each window of analysis
+# wavo: .wav audio file route
+# mm number of features to extract
+
+
+def mel_freq_cepstrum(xx, fs, mm,  m, note_played):
+    mfccs = librosa.feature.mfcc(y=xx, sr=fs)
+    df_iteration = pd.DataFrame({'index': [], 'mfccs_envelope':[],'instrument': [], 'note_played': []})
+    for i in range(0,mm):
+        mfccs_final = []
+        mfccs_final.append(mfccs[i,:])
+        df_iteration_2 = pd.DataFrame({'index': i, 'mfccs_envelope':[mfccs_final],'instrument': m, 'note_played': [note_played]})
+        df_iteration = pd.concat((df_iteration,df_iteration_2),axis=0).reset_index(drop=True)
     return df_iteration

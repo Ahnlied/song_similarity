@@ -1,8 +1,9 @@
 import pandas as pd
 import scipy.io.wavfile as wavfile
 import re
+import librosa
 import os
-from dataset_creation import chunks, extract_peaks_and_freqs, final_data_collection, data_collection_only_peaks
+from dataset_creation import chunks, extract_peaks_and_freqs, final_data_collection, data_collection_only_peaks, mel_freq_cepstrum
 from get_audio_from_link import obtain_youtube_link, delete_spaces, download_audio, remove_audio, from_mp4_to_wav
 
 common_path = '/home/jacs/Documents/DataScience/Personal/'
@@ -38,7 +39,7 @@ def audio_partition(audio, Fs, range_1, range_2):
     audio_cut = audio[range_1_index:range_2_index]
     return audio_cut
 
-def main(lapse):
+def main_fourier(lapse):
     for kk in range(0,len(links_audio)):
         database_name = str(titles[kk])
         if not os.path.exists(common_path+input_path+instrument_folder+'/'+database_name+'.csv'):
@@ -56,9 +57,11 @@ def main(lapse):
             #        df_final = pd.DataFrame({'index':[], 'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
             df_final = pd.DataFrame({'index':[], 'peaks': [], 'instrument': [], 'note_played': []})
             try:
+#                audio, Fs = librosa.load(wavo)
                 Fs, audio = wavfile.read(title_file+'.wav')
             except:
                 from_mp4_to_wav(title_file+'.mp4',common_path+dummy_path)
+#                audio, Fs = librosa.load(wavo)
                 Fs, audio = wavfile.read(title_file+'.wav')
                 remove_audio(title_file+'.mp4')
             length = audio.shape[0] / Fs
@@ -91,9 +94,44 @@ def main(lapse):
             remove_audio(title_file+'.wav')
         else:
             print(instrument,kk,"ya existe, we")
-        
+
+def main_cepstrum():
+    for kk in range(0,len(links_audio)):
+        database_name = str(titles[kk])
+        if not os.path.exists(common_path+input_path+instrument_folder+'/'+database_name+'.csv'):
+            indexoo = 0
+            range_1 = str(df_links['from'].iloc[kk])
+            range_2 = str(df_links['to'].iloc[kk])
+            print(range_1,range_2)
+            linko = links_audio[kk]
+            try:
+                title_file = str(download_audio(linko))
+                print(instrument,kk)#,title_file)
+            except:
+                print(instrument,kk,"titulo raro")
+                continue
+            #        df_final = pd.DataFrame({'index':[], 'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
+            df_final = pd.DataFrame({'index':[], 'mfccs_envelope': [], 'instrument': [], 'note_played': []})
+            try:
+                audio, Fs = librosa.load(title_file+'.wav')
+            except:
+                from_mp4_to_wav(title_file+'.mp4',common_path+dummy_path)
+                audio, Fs = librosa.load(title_file+'.wav')
+                remove_audio(title_file+'.mp4')
+            audio = audio_partition(audio, Fs, range_1, range_2)
+            length = audio.shape[0] / Fs
+            df_final_2 = mel_freq_cepstrum(audio, Fs, 13, pp, title_file)
+            df_final = pd.concat((df_final,df_final_2), axis=0).reset_index(drop=True)
+            #            df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, title_file, indexoo).reset_index(drop=True)
+            #        df_final = df_final.drop_duplicates().reset_index(drop=True)
+            df_final.to_csv(common_path+input_path+instrument_folder+'/'+database_name+'.csv', index=False)
+            remove_audio(title_file+'.wav')
+        else:
+            print(instrument,kk,"ya existe, we")
+
+            
 if __name__ == '__main__':
-    for pp in range(0,len(instruments)):
+    for pp in range(2,len(instruments)):
         instrument = instruments[pp]
 #        print(instrument)
         instrument_folder = re.sub(' ','_',str(instrument)).lower()#+'/'
@@ -101,7 +139,8 @@ if __name__ == '__main__':
         links_audio = list(df_links['youtube_links'])
 #        print(instrument,len(links_audio))
         titles = list(df_links['title'])
-        main(lapse)
+        main_cepstrum()
+#        main(lapse)
     
 #################################
 #        plt.specgram(aud, Fs=Fs)
