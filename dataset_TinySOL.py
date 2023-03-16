@@ -2,7 +2,8 @@ import pandas as pd
 import os
 import re
 import scipy.io.wavfile as wavfile
-from dataset_creation import chunks, extract_peaks_and_freqs, final_data_collection, data_collection_only_peaks
+import librosa
+from dataset_creation import chunks, extract_peaks_and_freqs, final_data_collection, data_collection_only_peaks, mel_freq_cepstrum
 from get_audio_from_link import obtain_youtube_link, delete_spaces, download_audio, remove_audio
 
 common_path = '/home/jacs/Documents/DataScience/Personal/'
@@ -64,8 +65,34 @@ def main():
         print(instrument_dataset)
         df_final.to_csv(common_path+output_path+instrument_folder+'/'+output_file+'.csv', index=False)
 
+def main_cepstrum():
+    for kk in range(0,len(instruments)):
+        print(kk)
+        instrument_dataset = instruments[kk]
+        instrument_folder = re.sub(' ','_',str(instrument_dataset)).lower()#+'/'
+        output_file = 'database_{}_cepstrum_features'.format(instrument_folder)
+        df = pd.DataFrame()
+        for woko in df_into[df_into['Instrument (in full)'] == instrument_dataset]['Path']:
+            wavo = common_path + input_path + woko
+            titulo = woko.split('/')[-1]
+            #    file_1 = file.format(audio_1)
+            #    wavo = path + file_1
+            audio, Fs = librosa.load(wavo)
+            length = audio.shape[0] / Fs
+            print(f"length = {length}s")
+            indexoo = 0
+            #        df_final = pd.DataFrame({'index':[], 'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
+            df_final = pd.DataFrame()
+            #            df_final = pd.DataFrame({'index':[], 'mfccs_envelope': [], 'instrument': [], 'note_played': []})
+            df_final_2 = mel_freq_cepstrum(audio, Fs, 13, kk, titulo)
+            df_final = pd.concat((df_final,df_final_2), axis=0).reset_index(drop=True)
+            #            df_final_2 = final_data_collection(freq_sorted, pikos_sorted, 10, kk, title_file, indexoo).reset_index(drop=True)
+            #        df_final = df_final.drop_duplicates().reset_index(drop=True)
+            df_final.to_csv(common_path+output_path+instrument_folder+'/'+output_file+'.csv', index=False)
+        
 if __name__ == '__main__':
-    main()
+#    main()
+    main_cepstrum()
 
     
 #################################

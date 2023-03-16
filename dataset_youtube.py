@@ -111,7 +111,8 @@ def main_cepstrum():
                 print(instrument,kk,"titulo raro")
                 continue
             #        df_final = pd.DataFrame({'index':[], 'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
-            df_final = pd.DataFrame({'index':[], 'mfccs_envelope': [], 'instrument': [], 'note_played': []})
+            df_final = pd.DataFrame()
+            #            df_final = pd.DataFrame({'index':[], 'mfccs_envelope': [], 'instrument': [], 'note_played': []})
             try:
                 audio, Fs = librosa.load(title_file+'.wav')
             except:
