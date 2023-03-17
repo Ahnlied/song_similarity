@@ -96,7 +96,7 @@ def main_fourier(lapse):
             print(instrument,kk,"ya existe, we")
 
 def main_cepstrum():
-    for kk in range(0,len(links_audio)):
+    for kk in range(3,len(links_audio)):
         database_name = str(titles[kk])
         if not os.path.exists(common_path+input_path+instrument_folder+'/'+database_name+'.csv'):
             indexoo = 0
@@ -104,12 +104,12 @@ def main_cepstrum():
             range_2 = str(df_links['to'].iloc[kk])
             print(range_1,range_2)
             linko = links_audio[kk]
-            try:
-                title_file = str(download_audio(linko))
-                print(instrument,kk)#,title_file)
-            except:
-                print(instrument,kk,"titulo raro")
-                continue
+#            try:
+            title_file = str(download_audio(linko))
+            print(instrument,kk)#,title_file)
+#            except:
+#                print(instrument,kk,"titulo raro")
+#                continue
             #        df_final = pd.DataFrame({'index':[], 'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
             df_final = pd.DataFrame()
             #            df_final = pd.DataFrame({'index':[], 'mfccs_envelope': [], 'instrument': [], 'note_played': []})
@@ -132,7 +132,7 @@ def main_cepstrum():
 
             
 if __name__ == '__main__':
-    for pp in range(2,len(instruments)):
+    for pp in range(0,len(instruments)):
         instrument = instruments[pp]
 #        print(instrument)
         instrument_folder = re.sub(' ','_',str(instrument)).lower()#+'/'
@@ -140,8 +140,8 @@ if __name__ == '__main__':
         links_audio = list(df_links['youtube_links'])
 #        print(instrument,len(links_audio))
         titles = list(df_links['title'])
-        main_cepstrum()
-#        main(lapse)
+#        main_cepstrum()
+        main_fourier(lapse)
     
 #################################
 #        plt.specgram(aud, Fs=Fs)
