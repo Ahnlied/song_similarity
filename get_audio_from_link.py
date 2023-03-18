@@ -3,7 +3,7 @@ import ffmpy
 from pytube import YouTube
 from pytube import Search
 import re
-from youtube_search import YoutubeSearch
+#from youtube_search import YoutubeSearch
 
 #inputdir = '/home/jacs/Documents/DataScience/Personal/song_similarity/'
 
@@ -12,12 +12,12 @@ from youtube_search import YoutubeSearch
 # a query which collects good data sample from Youtube,
 # but to find a generic search might be a bit tricky.
 
-def obtain_youtube_link(busqueda, maxim_results):
-    results = YoutubeSearch(busqueda, max_results=maxim_results).to_dict()
-    linkos_kun = []
-    for v in results:
-        linkos_kun.append('https://www.youtube.com' + v['url_suffix'])
-    return linkos_kun
+#def obtain_youtube_link(busqueda, maxim_results):
+#    results = YoutubeSearch(busqueda, max_results=maxim_results).to_dict()
+#    linkos_kun = []
+#    for v in results:
+#        linkos_kun.append('https://www.youtube.com' + v['url_suffix'])
+#    return linkos_kun
 
 ######################################################
 # To delete spaces from the title of a video and replace it with an underscore
@@ -41,7 +41,7 @@ def download_audio(link):
     title = delete_spaces(selected_video)
     audio = selected_video.streams.filter(only_audio=True, file_extension='mp4').first()
     if selected_video.length <= 300:
-        audio.download(filename=title+'.mp4')
+        audio.download(filename=title+'.wav')
         return title
     else:
         raise ValueError("Arguments have different lengths!")
