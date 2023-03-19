@@ -1,8 +1,6 @@
 #+title: Methodology to determine song similarity
 #+author: Jorge Andrés Carballo Santana
 
-* Methodology to determine song similarity
-
 There are some parameters that characterizes a song, such as:
 
 ** 1. TONE COLOR/TIMBRE/INSTRUMENTATION
@@ -59,6 +57,14 @@ There are some parameters that characterizes a song, such as:
 
 The objective of the current work is to create a project which detects and establish a "grade" of each parameter on a given song and, considering these grades, create playlists of similar vibes.
 
+
+* Approach:
+The first approach is to develop a Machine Learning model for each identification parameter of a song, such as, when executed each algorithm on a given song,
+the output would be a list of attributes given by each identification parameter. Our objective is to create a big database that contains the attributes of each
+existing song.
+
+The application of this model would be a recommendation system which brings fidelity to the musical taste of the user. The recommendation system would be built
+by the intersection of attributes, and maybe other modifiable parameters like "range of similarity", the message transmitted by the song's lyrics and so on.
 
 * 1. Develpoment TONE COLOR/TIMBRE/INSTRUMENTATION
 

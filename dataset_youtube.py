@@ -96,7 +96,7 @@ def main_fourier(lapse):
             print(instrument,kk,"ya existe, we")
 
 def main_cepstrum():
-    for kk in range(3,len(links_audio)):
+    for kk in range(0,len(links_audio)):
         database_name = str(titles[kk])
         if not os.path.exists(common_path+input_path+instrument_folder+'/'+database_name+'.csv'):
             indexoo = 0
@@ -132,7 +132,7 @@ def main_cepstrum():
 
             
 if __name__ == '__main__':
-    for pp in range(3,len(instruments)):
+    for pp in range(5,len(instruments)):
         instrument = instruments[pp]
 #        print(instrument)
         instrument_folder = re.sub(' ','_',str(instrument)).lower()#+'/'
