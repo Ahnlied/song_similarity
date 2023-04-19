@@ -96,10 +96,12 @@ Elaborar una base de datos y un modelo que detecte las notas aisladas de cada in
 THE EXECUTION OF THE CLASSIFICATION MODEL HAS BEEN POSPONED SINCE CURRENTLY WE ARE EXPLORING OTHER FEATURES RELEVANT TO THE PROBLEM.
 
 * Important Links:
-TinySOL Database - https://zenodo.org/record/3685367#.XnFp5i2h1IU%22 
+TinySOL Database - https://zenodo.org/record/3685367#.XnFp5i2h1IU%22
+VocalSet - https://zenodo.org/record/1193957
 Reference article - https://www.mdpi.com/2079-9292/11/9/1405/htm
 Mathematical reference example - https://doi.org/10.1016/j.ejor.2022.05.008
 Feature from audio extraction reference - https://arxiv.org/abs/1912.02606
+Melodic Contour - https://phamoxmusic.com/melodic-contour/
 
 
 * Modularity:

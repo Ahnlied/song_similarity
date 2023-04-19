@@ -10,8 +10,6 @@ common_path = '/home/jacs/Documents/DataScience/Personal/'
 input_path= 'song_similarity_audio/'
 dummy_path = 'song_similarity/'
 
-#input_data_path = common_path + input_path+ instrument_folder
-#final_data_path = common_path + dummy_path + 'instrument_identification/data' #instrument_folder
 
 lapse = 10
 
@@ -20,15 +18,18 @@ lapse = 10
 
 # As an input we want a tupple, with the link as first position and instrument as second position
 
-instruments = ['Bass Tuba','French Horn','Trombone','Trumpet in C','Accordion','Cello','Contrabass','Viola','Violin','Alto Saxophone','Bassoon','Clarinet in Bb','Flute','Oboe','Guitar','Electric guitar','Acoustic guitar','Bass guitar','Tapping','Steelpan','Percussion', 'Drum and bass', 'Wind instrument', 'Bowed string instrument']
+instruments = ['Bass Tuba','French Horn','Trombone','Trumpet in C','Accordion','Cello','Contrabass','Viola','Violin','Alto Saxophone','Bassoon','Clarinet in Bb','Flute','Oboe','Guitar','Electric guitar','Acoustic guitar','Bass guitar','Tapping','Steelpan','Percussion', 'Drum and bass', 'Wind instrument', 'Bowed string instrument', 'Keyboard', 'Single Voice Singing', 'Group Singing', 'Noise']
 
-instruments_reduced = {'woodwind': ['Clarinet in Bb','Flute','Oboe', 'Bassoon'],
-                       'string_instruments': ['Cello','Viola','Violin', 'Bowed string instrument'],
-                       'brass':['Bass Tuba','French Horn','Trombone', 'Trumpet in C', 'Alto Saxophone'],
-                       'guitar': ['Guitar','Electric guitar','Acoustic guitar', 'Tapping'],
-                       'accordion': ['Accordion'],
-                       'bass': ['Bass guitar','Contrabass'],
-                       'percussion': ['Steelpan','Percussion', 'Drum and bass']}
+# bowed = 23
+
+instruments_reduced = {'woodwind': ['Clarinet in Bb','Flute','Oboe', 'Bassoon', 'Alto Saxophone', 'Wind Instrument'],
+                       'brass':['Bass Tuba','French Horn','Trombone', 'Trumpet in C'],
+                       'bowed_string_instruments': ['Cello','Viola','Violin', 'Bowed string instrument'],
+                       'plucked_string_instruments':['Guitar','Electric guitar','Acoustic guitar', 'Tapping', 'Bass guitar','Contrabass'],
+                       'keyboard': ['Keyboard','Accordion'],
+                       'percussion': ['Steelpan','Percussion', 'Drum and bass'],
+                       'singing': ['Single Voice Singing', 'Group Singing'],
+                       'noise': ['Noise']}
 
 #instruments = ['Guitar','Electric guitar','Acoustic guitar','Bass guitar','Tapping','Steelpan','Percussion', 'Drum and bass', 'Wind instrument', 'Bowed string instrument']
 
@@ -107,7 +108,7 @@ def main_fourier(lapse):
             print(instrument,kk,"ya existe, we")
 
 def main_cepstrum():
-    for kk in range(3400,len(links_audio)):
+    for kk in range(0,len(links_audio)):
         try:
             database_name = str(titles[kk])
             if not os.path.exists(common_path+input_path+instrument_folder+'/'+database_name+'.csv'):
@@ -146,9 +147,20 @@ def main_cepstrum():
         except:
             continue
 
+
+def instr_reduced(final_data_path):
+    for instrument_final in instruments_reduced:
+        df_final = pd.DataFrame()
+        for instrument in innstrument_final:
+            instrument_folder = re.sub(' ','_',str(instrument)).lower()
+            df_instrument = pd.read_csv(final_data_path+'{}.csv'.format(instrument_folder))
+            df_final = pd.concat((df_final, df_instrument), axis=0)
+        df_final.to_csv(final_data_path+'{}.csv'.format(instrument_final))
             
+
+    
 if __name__ == '__main__':
-    for pp in range(15,len(instruments)):
+    for pp in range(24,len(instruments)):
         instrument = instruments[pp]
 #        print(instrument)
         instrument_folder = re.sub(' ','_',str(instrument)).lower()#+'/'
@@ -156,8 +168,11 @@ if __name__ == '__main__':
         links_audio = list(df_links['youtube_links'])
 #        print(instrument,len(links_audio))
         titles = list(df_links['title'])
-        main_cepstrum()
-#        dataset_merge(input_data_path, instrument_folder, final_data_path)
+#        main_cepstrum()
+        input_data_path = common_path + input_path+ instrument_folder
+        final_data_path = common_path + dummy_path + 'instrument_identification/data/' #instrument_folder
+        dataset_merge(input_data_path, instrument_folder, final_data_path)
+#    instr_reduced(final_data_path)
 #        main_fourier(lapse)
     
 #################################

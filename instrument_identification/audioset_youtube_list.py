@@ -39,7 +39,18 @@ instruments_to_audioset = {'Bass Tuba': [],
                            'Steelpan':['/m/0l156b'], 
                            'Percussion':['/m/0l14md'], 
                            'Drum and bass':['/m/0283d'],
-                           'Keyboard': ['/m/05148p4','/m/05r5c','/m/01s0ps']}
+                           'Keyboard': ['/m/05148p4','/m/05r5c','/m/01s0ps'],
+                           'Single Voice Singing':['/m/015lz1', '/t/dd00003', '/t/dd00004', '/t/dd00005', '/t/dd00006'],
+                           'Group Singing': ['/m/0l14jd', '/m/02bk07'],
+                           'Noise' :['/m/096m7z','/m/06_y0by']}
+#27,/m/015lz1,"Singing"
+#28,/m/0l14jd,"Choir"
+#29,/m/01swy6,"Yodeling"
+#30,/m/02bk07,"Chant"
+#32,/t/dd00003,"Male singing"
+#33,/t/dd00004,"Female singing"
+#34,/t/dd00005,"Child singing"
+#35,/t/dd00006,"Synthetic singing"}
 
 audioset = ['eval_segments', 'balanced_train_segments', 'unbalanced_train_segments']
 

@@ -1,5 +1,6 @@
 # for data transformation
 import numpy as np
+import os
 # for visualizing the data
 import matplotlib.pyplot as plt
 # for opening the media file
