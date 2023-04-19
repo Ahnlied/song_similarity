@@ -3,8 +3,8 @@ import scipy.io.wavfile as wavfile
 import re
 import librosa
 import os
-from dataset_creation import chunks, extract_peaks_and_freqs, final_data_collection, data_collection_only_peaks, mel_freq_cepstrum, dataset_merge
-from get_audio_from_link import delete_spaces, download_audio, remove_audio, from_mp4_to_wav #obtain_youtube_link
+from feature_extraction import chunks, extract_peaks_and_freqs, final_data_collection, data_collection_only_peaks, mel_freq_cepstrum, dataset_merge
+from audio_from_link import delete_spaces, download_audio, remove_audio, from_mp4_to_wav #obtain_youtube_link
 
 common_path = '/home/jacs/Documents/DataScience/Personal/'
 input_path= 'song_similarity_audio/'
@@ -107,7 +107,7 @@ def main_fourier(lapse):
         else:
             print(instrument,kk,"ya existe, we")
 
-def main_cepstrum():
+def main_cepstrum_dataset():
     for kk in range(0,len(links_audio)):
         try:
             database_name = str(titles[kk])
@@ -158,22 +158,24 @@ def instr_reduced(final_data_path):
         df_final.to_csv(final_data_path+'{}.csv'.format(instrument_final))
             
 
+model_run = 1
+        
     
 if __name__ == '__main__':
-    for pp in range(24,len(instruments)):
+    for pp in range(0,len(instruments)):
         instrument = instruments[pp]
-#        print(instrument)
+        print(instrument)
         instrument_folder = re.sub(' ','_',str(instrument)).lower()#+'/'
         df_links = pd.read_csv(common_path+input_path+instrument_folder+'/'+'{}_youtube_database_enrichment.csv'.format(instrument_folder))
-        links_audio = list(df_links['youtube_links'])
-#        print(instrument,len(links_audio))
+        links_audio = list(df_links['youtube_links'])       
+        #        print(instrument,len(links_audio))
         titles = list(df_links['title'])
-#        main_cepstrum()
+        main_cepstrum_dataset()
         input_data_path = common_path + input_path+ instrument_folder
         final_data_path = common_path + dummy_path + 'instrument_identification/data/' #instrument_folder
         dataset_merge(input_data_path, instrument_folder, final_data_path)
-#    instr_reduced(final_data_path)
-#        main_fourier(lapse)
+        instr_reduced(final_data_path)
+        main_fourier(lapse)
     
 #################################
 #        plt.specgram(aud, Fs=Fs)

@@ -3,8 +3,8 @@ import os
 import re
 import scipy.io.wavfile as wavfile
 import librosa
-from dataset_creation import chunks, extract_peaks_and_freqs, final_data_collection, data_collection_only_peaks, mel_freq_cepstrum
-from get_audio_from_link import obtain_youtube_link, delete_spaces, download_audio, remove_audio
+from feature_extraction import chunks, extract_peaks_and_freqs, final_data_collection, data_collection_only_peaks, mel_freq_cepstrum
+from audio_from_link import obtain_youtube_link, delete_spaces, download_audio, remove_audio
 
 common_path = '/home/jacs/Documents/DataScience/Personal/'
 input_path = 'song_similarity_audio/TinySOL/'
