@@ -148,13 +148,17 @@ def main_cepstrum_dataset():
             continue
 
 
-def instr_reduced(final_data_path):
-    for instrument_final in instruments_reduced:
+def instr_type(final_data_path):
+    instrument_type = list(instruments_reduced.keys())
+    for i in range(0,len(instrument_type)):
+        instrument_final = instruments_reduced[instrument_type[i]]
         df_final = pd.DataFrame()
         for instrument in innstrument_final:
             instrument_folder = re.sub(' ','_',str(instrument)).lower()
             df_instrument = pd.read_csv(final_data_path+'{}.csv'.format(instrument_folder))
             df_final = pd.concat((df_final, df_instrument), axis=0)
+        df_final['instrument_type'] = [instrument_final]*len(df_final)
+        df_final['instrument_type_name'] = [i]*len(df_final)
         df_final.to_csv(final_data_path+'{}.csv'.format(instrument_final))
             
 
@@ -170,12 +174,12 @@ if __name__ == '__main__':
         links_audio = list(df_links['youtube_links'])       
         #        print(instrument,len(links_audio))
         titles = list(df_links['title'])
-        main_cepstrum_dataset()
-        input_data_path = common_path + input_path+ instrument_folder
-        final_data_path = common_path + dummy_path + 'instrument_identification/data/' #instrument_folder
-        dataset_merge(input_data_path, instrument_folder, final_data_path)
-        instr_reduced(final_data_path)
-        main_fourier(lapse)
+#        main_cepstrum_dataset()
+        input_data_path = common_path + '/data/instruments/'
+        final_data_path = common_path + '/data/' #instrument_folder
+#        dataset_merge(input_data_path, instrument_folder, final_data_path)
+        instr_type(final_data_path)
+#        main_fourier(lapse)
     
 #################################
 #        plt.specgram(aud, Fs=Fs)
