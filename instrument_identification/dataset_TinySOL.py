@@ -4,7 +4,7 @@ import re
 import scipy.io.wavfile as wavfile
 import librosa
 from feature_extraction import chunks, extract_peaks_and_freqs, final_data_collection, data_collection_only_peaks, mel_freq_cepstrum
-from audio_from_link import obtain_youtube_link, delete_spaces, download_audio, remove_audio
+#from audio_from_link import obtain_youtube_link, delete_spaces, download_audio, remove_audio
 
 common_path = '/home/jacs/Documents/DataScience/Personal/'
 input_path = 'song_similarity_audio/TinySOL/'
@@ -71,7 +71,7 @@ def main_cepstrum():
         instrument_dataset = instruments[kk]
         instrument_folder = re.sub(' ','_',str(instrument_dataset)).lower()#+'/'
         output_file = 'database_{}_cepstrum_features'.format(instrument_folder)
-        df = pd.DataFrame()
+        df_final = pd.DataFrame()
         for woko in df_into[df_into['Instrument (in full)'] == instrument_dataset]['Path']:
             wavo = common_path + input_path + woko
             titulo = woko.split('/')[-1]
@@ -82,7 +82,6 @@ def main_cepstrum():
             print(f"length = {length}s")
             indexoo = 0
             #        df_final = pd.DataFrame({'index':[], 'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
-            df_final = pd.DataFrame()
             #            df_final = pd.DataFrame({'index':[], 'mfccs_envelope': [], 'instrument': [], 'note_played': []})
             df_final_2 = mel_freq_cepstrum(audio, Fs, 13, kk, titulo)
             df_final = pd.concat((df_final,df_final_2), axis=0).reset_index(drop=True)

@@ -102,6 +102,7 @@ Reference article - https://www.mdpi.com/2079-9292/11/9/1405/htm
 Mathematical reference example - https://doi.org/10.1016/j.ejor.2022.05.008
 Feature from audio extraction reference - https://arxiv.org/abs/1912.02606
 Melodic Contour - https://phamoxmusic.com/melodic-contour/
+GuitarSet - https://guitarset.weebly.com/
 
 
 * Modularity:

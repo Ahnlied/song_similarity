@@ -175,10 +175,10 @@ if __name__ == '__main__':
         #        print(instrument,len(links_audio))
         titles = list(df_links['title'])
 #        main_cepstrum_dataset()
-        input_data_path = common_path + '/data/instruments/'
-        final_data_path = common_path + '/data/' #instrument_folder
-#        dataset_merge(input_data_path, instrument_folder, final_data_path)
-        instr_type(final_data_path)
+        input_data_path = common_path + 'song_similarity_audio/' + instrument_folder
+        final_data_path = common_path + '/data/instruments/' #instrument_folder
+        dataset_merge(input_data_path, instrument_folder, final_data_path)
+#        instr_type(final_data_path)
 #        main_fourier(lapse)
     
 #################################

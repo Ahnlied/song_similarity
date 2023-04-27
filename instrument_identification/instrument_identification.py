@@ -137,28 +137,30 @@ if __name__ == '__main__':
     links_audio = list(df_links['youtube_links'])
     titles = list(df_links['title'])
     for kk in range(0,len(links_audio)):
-        try:
-            df_final = song_feature_extraction_cepstrum(kk)
-        except:
-            print('Algo shady')
-            continue
-        #    df_final = pd.read_csv('Peaches.csv')
-        df_final = df_final[['rms', 'spec_cent', 'spec_bw', 'rolloff', 'zcr',
-                             'mfccs_0', 'mfccs_1', 'mfccs_2', 'mfccs_3', 'mfccs_4', 'mfccs_5',
-                             'mfccs_6', 'mfccs_7', 'mfccs_8', 'mfccs_9', 'mfccs_10', 'mfccs_11',
-                             'mfccs_12']]
-        scaler = StandardScaler()
-        X = np.array(df_final.iloc[:, :-2], dtype = float)
-        #    X = scaler.fit_transform(np.array(df_final.iloc[:, :-4], dtype = float))
-        #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-        inst_type = "/home/jacs/Documents/DataScience/Personal/song_similarity/instrument_identification/models/instrument_type_model.pkl"
-        with open(inst_type, 'rb') as file:
-            inst_type_model = pickle.load(file)
-        Ypredict = inst_type_model.predict(X)
-        df_final['instrument_type_predicted'] = Ypredict
-        df_final['instrument_type_name'] = [instrument_type[i] for i in Ypredict]
-        df_final['instrument_identification'], df_final['instrument_identification_name']= instrument_identification(df_final)
-        #    df_final.to_csv('Peaches.csv', index=False)
-        print(df_final.groupby(['instrument_type_name'])['instrument_type_name'].count())
-        print(df_final.groupby(['instrument_identification_name'])['instrument_type_name'].count())
+        x = 'Algo shady'
+        while x == 'Algo shady':
+            try:
+                df_final = song_feature_extraction_cepstrum(kk)
+            except:
+                continue
+            #    df_final = pd.read_csv('Peaches.csv')
+            df_final = df_final[['rms', 'spec_cent', 'spec_bw', 'rolloff', 'zcr',
+                                 'mfccs_0', 'mfccs_1', 'mfccs_2', 'mfccs_3', 'mfccs_4', 'mfccs_5',
+                                 'mfccs_6', 'mfccs_7', 'mfccs_8', 'mfccs_9', 'mfccs_10', 'mfccs_11',
+                                 'mfccs_12']]
+            scaler = StandardScaler()
+            X = np.array(df_final.iloc[:, :-1], dtype = float)
+            #    X = scaler.fit_transform(np.array(df_final.iloc[:, :-4], dtype = float))
+            #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+            inst_type = "/home/jacs/Documents/DataScience/Personal/song_similarity/instrument_identification/models/instrument_type_model.pkl"
+            with open(inst_type, 'rb') as file:
+                inst_type_model = pickle.load(file)
+            Ypredict = inst_type_model.predict(X)
+            df_final['instrument_type_predicted'] = Ypredict
+            df_final['instrument_type_name'] = [instrument_type[i] for i in Ypredict]
+            df_final['instrument_identification'], df_final['instrument_identification_name']= instrument_identification(df_final)
+            df_final.to_csv('blop.csv', index=False)
+            print(df_final.groupby(['instrument_type_name'])['instrument_type_name'].count())
+            print(df_final.groupby(['instrument_identification_name'])['instrument_type_name'].count())
+            x = 'Otra cosa'
         #    print(Ypredict)

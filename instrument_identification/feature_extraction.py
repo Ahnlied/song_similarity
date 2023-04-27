@@ -179,6 +179,7 @@ def dataset_merge(input_data_path, instrument_folder, final_data_path):
         else:
             df_iteration = pd.read_csv(input_data_path+'/'+file)
             df_final = pd.concat((df_final,df_iteration), axis=0).reset_index(drop=True)
+    df_final['instrument_name'] = [instrument_folder]*len(df_final)
     df_final.to_csv(final_data_path+'{}.csv'.format(instrument_folder))
 #    final_data_path = common_path + dummy_path + instrument_folder
 
