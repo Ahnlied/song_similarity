@@ -117,9 +117,10 @@ def instrument_identification(X):
         if XX['instrument_type_predicted'] == 7:
             inst_model = 'plopo'
             kk = 7
-        XX = XX[:-3]
+        XX = scaler.fit_transform(np.array(X.iloc[i,:-3], dtype = float).reshape(1, -1))
+#        XX = XX[:-3]
 #        print(XX)
-        XX = np.array(list(XX.values), dtype=float).reshape(1,-1)
+#        XX = np.array(list(XX.values), dtype=float).reshape(1,-1)
         try:
             y_predo = inst_model.predict(XX)[0]
             Y_pred.append(y_predo)
@@ -149,8 +150,8 @@ if __name__ == '__main__':
                                  'mfccs_6', 'mfccs_7', 'mfccs_8', 'mfccs_9', 'mfccs_10', 'mfccs_11',
                                  'mfccs_12']]
             scaler = StandardScaler()
-            X = np.array(df_final.iloc[:, :-1], dtype = float)
-            #    X = scaler.fit_transform(np.array(df_final.iloc[:, :-4], dtype = float))
+#            X = np.array(df_final.iloc[:, :-1], dtype = float)
+            X = scaler.fit_transform(np.array(df_final.iloc[:, :-1], dtype = float))
             #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
             inst_type = "/home/jacs/Documents/DataScience/Personal/song_similarity/instrument_identification/models/instrument_type_model.pkl"
             with open(inst_type, 'rb') as file:
