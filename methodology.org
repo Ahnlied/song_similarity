@@ -103,6 +103,8 @@ Mathematical reference example - https://doi.org/10.1016/j.ejor.2022.05.008
 Feature from audio extraction reference - https://arxiv.org/abs/1912.02606
 Melodic Contour - https://phamoxmusic.com/melodic-contour/
 GuitarSet - https://guitarset.weebly.com/
+Rhythm - https://www.britannica.com/art/Baroque-music
+Source Separation - https://source-separation.github.io/tutorial/intro/tutorial_structure.html
 
 
 * Modularity:
@@ -114,3 +116,7 @@ GuitarSet - https://guitarset.weebly.com/
 - Find relations between original signal and noise. Simulate noise and add it to the single notes played.
   It would be nice to insolate and identify the instrument from a whole song an identify the signal-noise ratio.
 - With this we would be able to isolate the peaks from the instrument from the background noise.
+- Separate the song in parts: Background (repeating sounds which only stablishes rythm and tempo), Frontground (relevant sounds which helps on distinguish the melody of a song),
+  also it would be important to retreave only singer's voices to make analysis on its characteristics. From this distinction it would be easier to extract the rythm of a song.
+  
+

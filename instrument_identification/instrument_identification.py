@@ -6,7 +6,7 @@ import librosa
 import numpy as np
 import os
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-from feature_extraction import chunks, extract_peaks_and_freqs, final_data_collection, data_collection_only_peaks, mel_freq_cepstrum, dataset_merge
+from feature_extraction import  mel_freq_cepstrum, dataset_merge #chunks, extract_peaks_and_freqs, final_data_collection, data_collection_only_peaks
 from audio_from_link import delete_spaces, download_audio, remove_audio, from_mp4_to_wav #obtain_youtube_link
 
 instruments_reduced = {'woodwind': ['Clarinet in Bb','Flute','Oboe', 'Bassoon', 'Alto Saxophone', 'Wind Instrument'],
@@ -117,7 +117,7 @@ def instrument_identification(X):
         if XX['instrument_type_predicted'] == 7:
             inst_model = 'plopo'
             kk = 7
-        XX = scaler.fit_transform(np.array(X.iloc[i,:-3], dtype = float).reshape(1, -1))
+        XX = np.array(X.iloc[i,:-3], dtype = float).reshape(1, -1)
 #        XX = XX[:-3]
 #        print(XX)
 #        XX = np.array(list(XX.values), dtype=float).reshape(1,-1)
@@ -141,10 +141,10 @@ if __name__ == '__main__':
         x = 'Algo shady'
         while x == 'Algo shady':
             try:
-                df_final = song_feature_extraction_cepstrum(kk)
+#                df_final = song_feature_extraction_cepstrum(kk)
+                df_final = pd.read_csv('{}.csv'.format(titles[kk]))
             except:
                 continue
-            #    df_final = pd.read_csv('Peaches.csv')
             df_final = df_final[['rms', 'spec_cent', 'spec_bw', 'rolloff', 'zcr',
                                  'mfccs_0', 'mfccs_1', 'mfccs_2', 'mfccs_3', 'mfccs_4', 'mfccs_5',
                                  'mfccs_6', 'mfccs_7', 'mfccs_8', 'mfccs_9', 'mfccs_10', 'mfccs_11',
