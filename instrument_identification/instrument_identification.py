@@ -5,6 +5,7 @@ import re
 import librosa
 import numpy as np
 import os
+import repet
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from feature_extraction import  mel_freq_cepstrum, dataset_merge #chunks, extract_peaks_and_freqs, final_data_collection, data_collection_only_peaks
 from audio_from_link import delete_spaces, download_audio, remove_audio, from_mp4_to_wav #obtain_youtube_link
@@ -80,12 +81,24 @@ def song_feature_extraction_cepstrum(kk):
         from_mp4_to_wav(title_file+'.mp4',common_path+dummy_path)
         audio, Fs = librosa.load(title_file+'.wav')
         remove_audio(title_file+'.mp4')
-    audio = audio_partition(audio, Fs, range_1, range_2)
+    # Estimate the background signal, and the foreground signal
+    print(audio.shape)
+    background_signal = repet.original(audio, Fs)
+    audio_signal = np.reshape(audio, audio.shape + (1,))
+    foreground_signal = audio_signal - background_signal
+    # Write the background and foreground signals
+    repet.wavwrite(background_signal, Fs, "background_signal.wav")
+    repet.wavwrite(foreground_signal, Fs, "foreground_signal.wav")
+    audio = audio_partition(foreground_signal, Fs, range_1, range_2)
     length = audio.shape[0] / Fs
+    audio = np.squeeze(audio, axis=1)
+    print(audio.shape)
     df_final_2 = mel_freq_cepstrum(audio, Fs, 13, kk, title_file)
     df_final = pd.concat((df_final,df_final_2), axis=0).reset_index(drop=True)
     df_final.to_csv(database_name+'.csv', index=False)
     remove_audio(title_file+'.wav')
+    remove_audio('background_signal'+'.wav')
+    remove_audio('foreground_signal'+'.wav')
     return df_final
 
 def instrument_identification(X):
@@ -141,8 +154,8 @@ if __name__ == '__main__':
         x = 'Algo shady'
         while x == 'Algo shady':
             try:
-#                df_final = song_feature_extraction_cepstrum(kk)
-                df_final = pd.read_csv('{}.csv'.format(titles[kk]))
+                df_final = song_feature_extraction_cepstrum(kk)
+#                df_final = pd.read_csv('{}.csv'.format(titles[kk]))
             except:
                 continue
             df_final = df_final[['rms', 'spec_cent', 'spec_bw', 'rolloff', 'zcr',
