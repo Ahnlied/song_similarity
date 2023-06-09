@@ -105,6 +105,7 @@ Melodic Contour - https://phamoxmusic.com/melodic-contour/
 GuitarSet - https://guitarset.weebly.com/
 Rhythm - https://www.britannica.com/art/Baroque-music
 Source Separation - https://source-separation.github.io/tutorial/intro/tutorial_structure.html
+REPET Algorithm - https://lucainiaoge.github.io/2021/03/31/REPET_Algorithm_study/
 
 
 * Modularity:
