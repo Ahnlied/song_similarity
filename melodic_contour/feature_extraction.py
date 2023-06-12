@@ -21,12 +21,14 @@ import librosa
 # Say, you have a 1s signal, you want windows of 0.25s 
 # with this methodology you will have each window that includes half of the past window
 
-def chunks(xs, n):
+def chunks(xs, Fs, n):
     # xs: signal
-    # n: times you want to split the signal
+    # n: length of each window
     # len(return): n(even): 2n - 1
     #            : n(odd): 2n +1
-    ms = int(len(xs)/n)
+    length = len(xs)/Fs
+    num_windows = int(length/n)
+    ms = int(len(xs)/num_windows)
     return list(xs[i-int(ms/2):i+int(ms/2)] for i in range(int(ms/2), len(xs), int(ms/2)))
 #######################################################################
 
@@ -92,7 +94,7 @@ def extract_peaks_and_freqs(aud, Fs):
     freq = scipy.fft.fftfreq(len(aud),Fs)
     freq_sci= scipy.signal.find_peaks(sp)[0]
     sp_sci = scipy.signal.peak_prominences(sp, peaks=freq_sci)[0]
-    freq_gaps = np.arange(0,6750,1)
+    freq_gaps = np.arange(0,2000,1)
     sp_final = exist_or_zero(freq_sci, sp_sci, freq_gaps)
     freq_final, _ = scipy.signal.find_peaks(sp_final)
     pikos = [sp_final[freq_final[i]] for i in range(0,len(freq_final))]
@@ -108,7 +110,7 @@ def extract_peaks_and_freqs(aud, Fs):
 # This module should be applicable to more examples of sounds, such that you can expand the database
 # from arbitrary audio files.
 
-def final_data_collection(freq_sorted, pikos_sorted, n, m, note_played, indexo):
+def shazam_like(freq_sorted, pikos_sorted, n, m, note_played, indexo):
     df_final = pd.DataFrame({'index':[], 'peak_1': [], 'peak_2': [], 'Magnitude difference': [],'instrument': [], 'note_played': []})
     frequs_sp = []
     for i in range(0,len(freq_sorted[:n])):
