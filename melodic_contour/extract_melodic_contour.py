@@ -1,6 +1,17 @@
+import pandas as pd
+import numpy as np
+import scipy
+
+import librosa
+import pytube
+
+import json
+
+
 ####### GET top records
 #top_2_idx = np.argsort(sp)[-40:]
 #listo_freq = [freq[i] for i in top_2_idx]
+
 
 #######################################################################
 # Creates different chunks of data from a signal
@@ -8,12 +19,14 @@
 # Say, you have a 1s signal, you want windows of 0.25s 
 # with this methodology you will have each window that includes half of the past window
 
-def chunks(xs, n):
+def chunks(xs, Fs, n):
     # xs: signal
-    # n: times you want to split the signal
+    # n: length of each window
     # len(return): n(even): 2n - 1
     #            : n(odd): 2n +1
-    ms = int(len(xs)/n)
+    length = len(xs)/Fs
+    num_windows = int(length/n)
+    ms = int(len(xs)/num_windows)
     return list(xs[i-int(ms/2):i+int(ms/2)] for i in range(int(ms/2), len(xs), int(ms/2)))
 #######################################################################
 
@@ -124,4 +137,114 @@ def data_collection_only_peaks(freq_sorted, pikos_sorted, n, m, note_played, ind
     df_iteration = pd.DataFrame({'index': indexo, 'peaks':[freq_peaks],'instrument': m, 'note_played': [note_played]})
 #    df_final = pd.concat((df_final,df_iteration), axis=0)
     return df_iteration
+
+def hist_sum(freqs, sp, bins, sp_sum):
+    min_max_freq = np.arange(200,2000,1)
+    interval = int(len(min_max_freq)/bins)
+    freq_ranges = [(min(min_max_freq[i*interval:(i+1)*interval]),max(min_max_freq[i*interval:(i+1)*interval])) for i in range(0,bins)]
+#    print(freq_ranges)
+    for kk in range(0,len(freqs)):
+        freq = freqs[kk]
+        for rangee in freq_ranges:
+            ###### DUDA AQUI
+            rangee_string = str(rangee)
+            ###############
+            ###### DUDA AQUI 2
+            if freq in range(int(rangee[0]),int(rangee[1])):
+                try:
+                    sp_sum[rangee_string] += sp[kk]
+                except:
+                    sp_sum[rangee_string] = sp[kk]
+            else:
+                try:
+                    sp_sum[rangee_string] += 0
+                except:
+                    sp_sum[rangee_string] = 0
+            ###############
+    return sp_sum
+
+def main_frequencies_songs(examples, input_folder, output_folder):
+    df_dummy = pd.DataFrame()
+    df_final3 = pd.DataFrame()
+    audio, Fs = librosa.load(input_folder + examples+ '.wav')
+    length = audio.shape[0] / Fs
+    print(f"length = {length}s")
+    print(f"num of chunks = {length/0.25}")
+    chonkos = chunks(audio, Fs, 0.25)
+    for chunk in chonkos:
+        try:
+            sp_sorted, freq_sorted, sp_final, freq_final = extract_peaks_and_freqs(chunk, Fs)
+            rms = librosa.feature.rms(y=chunk, frame_length=len(chunk), hop_length=int(len(chunk)+2))
+            spec_cent = librosa.feature.spectral_centroid(y=chunk, sr=Fs, n_fft=len(chunk), hop_length=int(len(chunk)+2))
+            rolloff = librosa.feature.spectral_rolloff(y=chunk, sr=Fs, n_fft=len(chunk), hop_length=int(len(chunk)+2))
+            zcr = librosa.feature.zero_crossing_rate(chunk, frame_length=len(chunk), hop_length=int(len(chunk)+2))
+            df_final_2 = pd.DataFrame({'10_freq': [list(freq_sorted)[:10]], '10_peak': [list(sp_sorted)[:10]], 'song_played': [examples]})
+            df_final_2['rms']= rms[0,:]
+            df_final_2['spec_cent']= spec_cent[0,:]
+            df_final_2['rolloff']= rolloff[0,:]
+            df_final_2['zcr']= zcr[0,:]
+            df_final3 = pd.concat((df_final3,df_final_2), axis=0).reset_index(drop=True)
+        except:
+            continue
+    df_dummy = pd.concat((df_dummy,df_final3), axis=0).reset_index(drop=True)
+    print(df_dummy)
+    df_dummy.to_csv(output_folder + examples+'.csv', index=False)
+    df_dummy = pd.read_csv(output_folder + examples+'.csv')
+    df_final = pd.DataFrame()
+    for kk in range(0,len(df_dummy)):
+        note_played = df_dummy.iloc[kk]['song_played']
+        chunk_rms = df_dummy.iloc[kk]['rms']
+        chunk_spec_cent = df_dummy.iloc[kk]['spec_cent']
+        chunk_rolloff= df_dummy.iloc[kk]['rolloff']
+        chunk_zcr= df_dummy.iloc[kk]['zcr']
+        sp_sum = dict()
+        freqos = df_dummy.iloc[kk]['10_freq']
+        freqos = list(freqos.replace('[','').replace(']','').split(', '))
+        try:
+            freqos = [float(freqo) for freqo in freqos]
+        except:
+            continue
+        spos = df_dummy.iloc[kk]['10_peak']
+        spos = spos.replace('[','').replace(']','').split(', ')
+        spos = [float(spo) for spo in spos]
+        sp_sum= hist_sum(freqos, spos, 90, sp_sum)
+        df_final3 = pd.DataFrame({'freq_sp': [sp_sum], 'song_played': [examples], 'rms': [chunk_rms], 'spec_cent':[chunk_spec_cent],
+                                  'rolloff': [chunk_rolloff], 'zcr': [chunk_zcr]})
+        df_final = pd.concat((df_final,df_final3), axis=0).reset_index(drop=True)
+    print(sp_sum)
+    df_final.to_csv(output_folder + examples+'.csv', index=False)
+    freqsp = dict(json.loads(str(df_final['freq_sp'].iloc[0]).replace("'",'"')))
+    freqs = list(freqsp.keys())
+    for entry in freqs:
+        entry_dummy = []
+        for ii in range(0,len(df_final)):
+            dict_dummy = dict(json.loads(str(df_final['freq_sp'].iloc[ii]).replace("'",'"')))
+            entry_dummy.append(dict_dummy[entry])
+        df_final[entry] = entry_dummy
+    df_final = df_final[['song_played',
+                         '(200, 219)', '(220, 239)', '(240, 259)', '(260, 279)', '(280, 299)',
+                         '(300, 319)', '(320, 339)', '(340, 359)', '(360, 379)', '(380, 399)',
+                         '(400, 419)', '(420, 439)', '(440, 459)', '(460, 479)', '(480, 499)',
+                         '(500, 519)', '(520, 539)', '(540, 559)', '(560, 579)', '(580, 599)',
+                         '(600, 619)', '(620, 639)', '(640, 659)', '(660, 679)', '(680, 699)',
+                         '(700, 719)', '(720, 739)', '(740, 759)', '(760, 779)', '(780, 799)',
+                         '(800, 819)', '(820, 839)', '(840, 859)', '(860, 879)', '(880, 899)',
+                         '(900, 919)', '(920, 939)', '(940, 959)', '(960, 979)', '(980, 999)',
+                         '(1000, 1019)', '(1020, 1039)', '(1040, 1059)', '(1060, 1079)',
+                         '(1080, 1099)', '(1100, 1119)', '(1120, 1139)', '(1140, 1159)',
+                         '(1160, 1179)', '(1180, 1199)', '(1200, 1219)', '(1220, 1239)',
+                         '(1240, 1259)', '(1260, 1279)', '(1280, 1299)', '(1300, 1319)',
+                         '(1320, 1339)', '(1340, 1359)', '(1360, 1379)', '(1380, 1399)',
+                         '(1400, 1419)', '(1420, 1439)', '(1440, 1459)', '(1460, 1479)',
+                         '(1480, 1499)', '(1500, 1519)', '(1520, 1539)', '(1540, 1559)',
+                         '(1560, 1579)', '(1580, 1599)', '(1600, 1619)', '(1620, 1639)',
+                         '(1640, 1659)', '(1660, 1679)', '(1680, 1699)', '(1700, 1719)',
+                         '(1720, 1739)', '(1740, 1759)', '(1760, 1779)', '(1780, 1799)',
+                         '(1800, 1819)', '(1820, 1839)', '(1840, 1859)', '(1860, 1879)',
+                         '(1880, 1899)', '(1900, 1919)', '(1920, 1939)', '(1940, 1959)',
+                         '(1960, 1979)', '(1980, 1999)', 'rms', 'spec_cent',
+                         'rolloff', 'zcr']]
+#    df_final.to_csv(output_folder + note+'.csv',index=False)
+    return df_final
+
 
