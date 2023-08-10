@@ -103,9 +103,11 @@ Mathematical reference example - https://doi.org/10.1016/j.ejor.2022.05.008
 Feature from audio extraction reference - https://arxiv.org/abs/1912.02606
 Melodic Contour - https://phamoxmusic.com/melodic-contour/
 GuitarSet - https://guitarset.weebly.com/
-Rhythm - https://www.britannica.com/art/Baroque-music
+Rhythm - https://www.britannica.com/art/Baroque-music https://www.soundbrenner.com/blog/rhythm-basics-beat-measure-meter-time-signature-tempo/
 Source Separation - https://source-separation.github.io/tutorial/intro/tutorial_structure.html
 REPET Algorithm - https://lucainiaoge.github.io/2021/03/31/REPET_Algorithm_study/
+Chroma Feature Extraction - https://www.researchgate.net/publication/330796993_Chroma_Feature_Extraction
+Cyclic tempogram - https://ieeexplore.ieee.org/abstract/document/5495219/authors#authors
 
 
 * Modularity:

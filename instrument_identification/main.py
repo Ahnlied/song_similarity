@@ -5,10 +5,14 @@ import re
 import librosa
 import numpy as np
 import os
-import repet
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from feature_extraction import  mel_freq_cepstrum, dataset_merge #chunks, extract_peaks_and_freqs, final_data_collection, data_collection_only_peaks
+
+import sys
+# adding Folder_2 to the system path
+sys.path.insert(0, '/home/jacs/Documents/DataScience/Personal/song_similarity/')
 from audio_from_link import delete_spaces, download_audio, remove_audio, from_mp4_to_wav #obtain_youtube_link
+import repet
 
 instruments_reduced = {'woodwind': ['Clarinet in Bb','Flute','Oboe', 'Bassoon', 'Alto Saxophone', 'Wind Instrument'],
                        'brass':['Bass Tuba','French Horn','Trombone', 'Trumpet in C'],
@@ -144,6 +148,7 @@ def instrument_identification(X):
             Y_name.append(instruments_reduced[instrument_type[kk]][0])
     return Y_pred, Y_name
 
+existir = 1
 
 if __name__ == '__main__':
     model_folder = '/home/jacs/Documents/DataScience/Personal/song_similarity/'
@@ -153,19 +158,20 @@ if __name__ == '__main__':
     titles = list(df_links['title'])
     for kk in range(0,len(links_audio)):
         x = 'Algo shady'
-        while x == 'Algo shady':
-            try:
+        if x == 'Algo shady':
+#            try:
+            if existir == 0:
                 df_final = song_feature_extraction_cepstrum(kk)
-#               df_final = pd.read_csv('{}.csv'.format(titles[kk]))
-            except:
-                continue
+            else:                    
+                df_final = pd.read_csv(model_folder + 'instrument_identification/{}.csv'.format(titles[kk]))
+#            except:
+#                continue
             df_final = df_final[['rms', 'spec_cent', 'spec_bw', 'rolloff', 'zcr',
-                                 'mfccs_0', 'mfccs_1', 'mfccs_2', 'mfccs_3', 'mfccs_4', 'mfccs_5',
-                                 'mfccs_6', 'mfccs_7', 'mfccs_8', 'mfccs_9', 'mfccs_10', 'mfccs_11',
-                                 'mfccs_12']]
-            scaler = StandardScaler()
-#            X = np.array(df_final.iloc[:, :-1], dtype = float)
-            X = scaler.fit_transform(np.array(df_final.iloc[:, :-1], dtype = float))
+                                 'mfccs_0', 'mfccs_1', 'mfccs_2', 'mfccs_3', 'mfccs_4', 'mfccs_5', 'mfccs_6',
+                                 'mfccs_7', 'mfccs_8', 'mfccs_9', 'mfccs_10', 'mfccs_11', 'mfccs_12']]
+#            scaler = StandardScaler()
+            X = np.array(df_final.iloc[:, :-1], dtype = float)
+#            X = scaler.fit_transform(np.array(df_final.iloc[:, :-1], dtype = float))
             #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
             inst_type = "/home/jacs/Documents/DataScience/Personal/song_similarity/instrument_identification/models/instrument_type_model.pkl"
             with open(inst_type, 'rb') as file:

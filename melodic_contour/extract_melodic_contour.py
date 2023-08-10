@@ -163,14 +163,20 @@ def hist_sum(freqs, sp, bins, sp_sum):
             ###############
     return sp_sum
 
-def main_frequencies_songs(examples, input_folder, output_folder):
+def main_frequencies_songs(examples, input_folder, output_folder, background):
     df_dummy = pd.DataFrame()
     df_final3 = pd.DataFrame()
-    audio, Fs = librosa.load(input_folder + examples+ '.wav')
+    if background == 1:
+        audio, Fs = librosa.load(input_folder+ 'song_similarity/foreground_signal.wav')
+        dataset_name = examples+'_foreground'
+    else:
+        audio, Fs = librosa.load(input_folder + examples+ '.wav')
+        dataset_name = examples
     length = audio.shape[0] / Fs
+    bpms = int(librosa.feature.tempo(y=audio, sr=Fs)[0])
     print(f"length = {length}s")
-    print(f"num of chunks = {length/0.25}")
-    chonkos = chunks(audio, Fs, 0.25)
+    print(f"num of chunks = {length*(60/bpms)}")
+    chonkos = chunks(audio, Fs, 60/bpms)
     for chunk in chonkos:
         try:
             sp_sorted, freq_sorted, sp_final, freq_final = extract_peaks_and_freqs(chunk, Fs)
@@ -188,8 +194,9 @@ def main_frequencies_songs(examples, input_folder, output_folder):
             continue
     df_dummy = pd.concat((df_dummy,df_final3), axis=0).reset_index(drop=True)
     print(df_dummy)
-    df_dummy.to_csv(output_folder + examples+'.csv', index=False)
-    df_dummy = pd.read_csv(output_folder + examples+'.csv')
+    print('plop')
+    df_dummy.to_csv(output_folder + dataset_name +'.csv', index=False)
+    df_dummy = pd.read_csv(output_folder + dataset_name+'.csv')
     df_final = pd.DataFrame()
     for kk in range(0,len(df_dummy)):
         note_played = df_dummy.iloc[kk]['song_played']
@@ -212,7 +219,6 @@ def main_frequencies_songs(examples, input_folder, output_folder):
                                   'rolloff': [chunk_rolloff], 'zcr': [chunk_zcr]})
         df_final = pd.concat((df_final,df_final3), axis=0).reset_index(drop=True)
     print(sp_sum)
-    df_final.to_csv(output_folder + examples+'.csv', index=False)
     freqsp = dict(json.loads(str(df_final['freq_sp'].iloc[0]).replace("'",'"')))
     freqs = list(freqsp.keys())
     for entry in freqs:
@@ -244,6 +250,8 @@ def main_frequencies_songs(examples, input_folder, output_folder):
                          '(1880, 1899)', '(1900, 1919)', '(1920, 1939)', '(1940, 1959)',
                          '(1960, 1979)', '(1980, 1999)', 'rms', 'spec_cent',
                          'rolloff', 'zcr']]
+    df_final.to_csv(output_folder + dataset_name +'.csv', index=False)
+    print('se guardo')
 #    df_final.to_csv(output_folder + note+'.csv',index=False)
     return df_final
 
