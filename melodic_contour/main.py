@@ -1,26 +1,14 @@
-import pandas as pd
-import pickle
-import numpy as np
-import librosa
-import json
-import sys
 
-from extract_melodic_contour import main_frequencies_songs
-
-# adding Folder_2 to the system path
-sys.path.insert(0, '/home/jacs/Documents/DataScience/Personal/song_similarity/')
-import repet
-from audio_from_link import delete_spaces, download_audio, remove_audio, from_mp4_to_wav #obtain_youtube_link
 
 models_path = '/home/jacs/Documents/DataScience/Personal/song_similarity/melodic_contour/models/'
 
-exists_path = '/home/jacs/Documents/DataScience/Personal/song_similarity/melodic_contour/'
+exists_path = '/home/jacs/Documents/DataScience/Personal/song_similarity/'
 
 octaves_names = ['4th_octave' , '5th_octave', '6th_otave']
 
 notes_names = ['A#', 'A', 'B', 'C#', 'C', 'D#', 'D', 'E', 'F#', 'F', 'G#', 'G']
 
-def exists(route):
+def file_exists(route):
     df_song = pd.read_csv(route)
     df_song = df_song[['song_played', '(200, 219)', '(220, 239)',
                        '(240, 259)', '(260, 279)', '(280, 299)', '(300, 319)', '(320, 339)',
@@ -124,6 +112,7 @@ existir = 1
 if __name__ == '__main__':
     input_folder = '/home/jacs/Documents/DataScience/Personal/song_similarity/'
     output_folder = '/home/jacs/Documents/DataScience/Personal/song_similarity/melodic_contour/'
+    output_folder_2 = '/home/jacs/Documents/DataScience/Personal/song_similarity/'
     df_links = pd.read_csv(input_folder +'audio_model.csv')
     print(df_links)
     links_audio = list(df_links['youtube_links'])
@@ -141,15 +130,15 @@ if __name__ == '__main__':
                     title_file = str(download_audio(linko))
                     ######### RUN WITH DOWNLOAD
                     ## separate background and frontground
-                    df_song = background_foreground(title_file, input_folder, output_folder)
+                    df_song = background_foreground(title_file, input_folder, output_folder_2)
                     ## No filters
 #                    df_song = main_frequencies_songs(title_file, input_folder, output_folder, 0)
                     ##########
                 else:
                     title_file = title
                     #### RE-RUN WITHOUT DOWNLOAD
-                    existe = exists_path +title+'.csv'
-                    df_song = exists(existe)
+                    existe = exists_path +title+'_melodic.csv'
+                    df_song = file_exists(existe)
             except:
                 print('elol')
                 continue
@@ -165,7 +154,7 @@ if __name__ == '__main__':
             print(df_song.groupby(['prediction'])['prediction'].count())
             df_song['octave'] = [octaves_names[i] for i in Ypredict]
             df_song['note_code'], df_song['note'] = note_identification(df_song)
-            df_song.to_csv(output_folder + title+'.csv', index=False)
+            df_song.to_csv(output_folder_2 + title+'_melodic.csv', index=False)
             x = 'Otra cosa' 
             print(df_song.groupby(['octave'])['octave'].count())
             print(df_song.groupby(['note_code'])['note_code'].count())

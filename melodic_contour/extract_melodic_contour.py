@@ -250,7 +250,7 @@ def main_frequencies_songs(examples, input_folder, output_folder, background):
                          '(1880, 1899)', '(1900, 1919)', '(1920, 1939)', '(1940, 1959)',
                          '(1960, 1979)', '(1980, 1999)', 'rms', 'spec_cent',
                          'rolloff', 'zcr']]
-    df_final.to_csv(output_folder + dataset_name +'.csv', index=False)
+    df_final.to_csv(output_folder + dataset_name +'_melodic.csv', index=False)
     print('se guardo')
 #    df_final.to_csv(output_folder + note+'.csv',index=False)
     return df_final

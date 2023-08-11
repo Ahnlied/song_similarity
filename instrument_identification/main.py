@@ -1,18 +1,4 @@
-import pandas as pd
-import scipy.io.wavfile as wavfile
-import pickle
-import re
-import librosa
-import numpy as np
-import os
-from sklearn.preprocessing import LabelEncoder, StandardScaler
-from feature_extraction import  mel_freq_cepstrum, dataset_merge #chunks, extract_peaks_and_freqs, final_data_collection, data_collection_only_peaks
 
-import sys
-# adding Folder_2 to the system path
-sys.path.insert(0, '/home/jacs/Documents/DataScience/Personal/song_similarity/')
-from audio_from_link import delete_spaces, download_audio, remove_audio, from_mp4_to_wav #obtain_youtube_link
-import repet
 
 instruments_reduced = {'woodwind': ['Clarinet in Bb','Flute','Oboe', 'Bassoon', 'Alto Saxophone', 'Wind Instrument'],
                        'brass':['Bass Tuba','French Horn','Trombone', 'Trumpet in C'],
@@ -71,6 +57,7 @@ def audio_partition(audio, Fs, range_1, range_2):
 
 
 def song_feature_extraction_cepstrum(kk):
+    input_folder = '/home/jacs/Documents/DataScience/Personal/song_similarity/'
     database_name = str(titles[kk])
     indexoo = 0
     range_1 = str(df_links['from'].iloc[kk])
@@ -80,7 +67,7 @@ def song_feature_extraction_cepstrum(kk):
     title_file = str(download_audio(linko))
     df_final = pd.DataFrame()
     try:
-        audio, Fs = librosa.load(title_file+'.wav')
+        audio, Fs = librosa.load(input_folder + title_file+'.wav')
     except:
         from_mp4_to_wav(title_file+'.mp4',common_path+dummy_path)
         audio, Fs = librosa.load(title_file+'.wav')
@@ -99,7 +86,7 @@ def song_feature_extraction_cepstrum(kk):
     print(audio.shape)
     df_final_2 = mel_freq_cepstrum(audio, Fs, 13, kk, title_file)
     df_final = pd.concat((df_final,df_final_2), axis=0).reset_index(drop=True)
-    df_final.to_csv(database_name+'.csv', index=False)
+    df_final.to_csv(database_name+'_instrument.csv', index=False)
 #    remove_audio(title_file+'.wav')
     remove_audio('background_signal'+'.wav')
     remove_audio('foreground_signal'+'.wav')
@@ -163,7 +150,7 @@ if __name__ == '__main__':
             if existir == 0:
                 df_final = song_feature_extraction_cepstrum(kk)
             else:                    
-                df_final = pd.read_csv(model_folder + 'instrument_identification/{}.csv'.format(titles[kk]))
+                df_final = pd.read_csv(model_folder + '{}_instrument.csv'.format(titles[kk]))
 #            except:
 #                continue
             df_final = df_final[['rms', 'spec_cent', 'spec_bw', 'rolloff', 'zcr',
@@ -180,8 +167,8 @@ if __name__ == '__main__':
             df_final['instrument_type_predicted'] = Ypredict
             df_final['instrument_type_name'] = [instrument_type[i] for i in Ypredict]
             df_final['instrument_identification'], df_final['instrument_identification_name']= instrument_identification(df_final)
-            df_final.to_csv('blop.csv', index=False)
             print(df_final.groupby(['instrument_type_name'])['instrument_type_name'].count())
             print(df_final.groupby(['instrument_identification_name'])['instrument_type_name'].count())
+            df_final.to_csv('{}_instrument.csv'.format(titles[kk]), index=False)
             x = 'Otra cosa'
         #    print(Ypredict)
