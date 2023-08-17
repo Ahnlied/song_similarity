@@ -1,8 +1,0 @@
-import sys
-
-
-with open("melodic_contour/main.py") as f:
-    exec(f.read())
-
-with open("instrument_identification/main.py") as f:
-    exec(f.read())
