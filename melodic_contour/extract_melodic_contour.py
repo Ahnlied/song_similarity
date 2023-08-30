@@ -167,8 +167,8 @@ def main_frequencies_songs(examples, input_folder, output_folder, background):
     df_dummy = pd.DataFrame()
     df_final3 = pd.DataFrame()
     if background == 1:
-        audio, Fs = librosa.load(input_folder+ 'song_similarity/foreground_signal.wav')
-        dataset_name = examples+'_foreground'
+        audio, Fs = librosa.load(input_folder+ 'foreground_signal.wav')
+        dataset_name = examples
     else:
         audio, Fs = librosa.load(input_folder + examples+ '.wav')
         dataset_name = examples
@@ -195,8 +195,8 @@ def main_frequencies_songs(examples, input_folder, output_folder, background):
     df_dummy = pd.concat((df_dummy,df_final3), axis=0).reset_index(drop=True)
     print(df_dummy)
     print('plop')
-    df_dummy.to_csv(output_folder + dataset_name +'.csv', index=False)
-    df_dummy = pd.read_csv(output_folder + dataset_name+'.csv')
+    df_dummy.to_csv(output_folder + dataset_name +'_melodic_features.csv', index=False)
+    df_dummy = pd.read_csv(output_folder + dataset_name+'_melodic_features.csv')
     df_final = pd.DataFrame()
     for kk in range(0,len(df_dummy)):
         note_played = df_dummy.iloc[kk]['song_played']
@@ -250,7 +250,7 @@ def main_frequencies_songs(examples, input_folder, output_folder, background):
                          '(1880, 1899)', '(1900, 1919)', '(1920, 1939)', '(1940, 1959)',
                          '(1960, 1979)', '(1980, 1999)', 'rms', 'spec_cent',
                          'rolloff', 'zcr']]
-    df_final.to_csv(output_folder + dataset_name +'_melodic.csv', index=False)
+    df_final.to_csv(output_folder + dataset_name +'_melodic_features.csv', index=False)
     print('se guardo')
 #    df_final.to_csv(output_folder + note+'.csv',index=False)
     return df_final

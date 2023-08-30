@@ -1,5 +1,5 @@
 import pandas as pd
-import re
+import regex as re
 import os
 
 def audioset_to_enrichment(df_eval):

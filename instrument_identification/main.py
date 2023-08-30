@@ -86,7 +86,7 @@ def song_feature_extraction_cepstrum(kk):
     print(audio.shape)
     df_final_2 = mel_freq_cepstrum(audio, Fs, 13, kk, title_file)
     df_final = pd.concat((df_final,df_final_2), axis=0).reset_index(drop=True)
-    df_final.to_csv(database_name+'_instrument.csv', index=False)
+    df_final.to_csv(database_name+'_instruments_feature.csv', index=False)
 #    remove_audio(title_file+'.wav')
     remove_audio('background_signal'+'.wav')
     remove_audio('foreground_signal'+'.wav')
@@ -135,7 +135,7 @@ def instrument_identification(X):
             Y_name.append(instruments_reduced[instrument_type[kk]][0])
     return Y_pred, Y_name
 
-existir = 1
+existir = 0
 
 if __name__ == '__main__':
     model_folder = '/home/jacs/Documents/DataScience/Personal/song_similarity/'
@@ -150,7 +150,7 @@ if __name__ == '__main__':
             if existir == 0:
                 df_final = song_feature_extraction_cepstrum(kk)
             else:                    
-                df_final = pd.read_csv(model_folder + '{}_instrument.csv'.format(titles[kk]))
+                df_final = pd.read_csv(model_folder + '{}_instruments_feature.csv'.format(titles[kk]))
 #            except:
 #                continue
             df_final = df_final[['rms', 'spec_cent', 'spec_bw', 'rolloff', 'zcr',
@@ -167,8 +167,9 @@ if __name__ == '__main__':
             df_final['instrument_type_predicted'] = Ypredict
             df_final['instrument_type_name'] = [instrument_type[i] for i in Ypredict]
             df_final['instrument_identification'], df_final['instrument_identification_name']= instrument_identification(df_final)
-            print(df_final.groupby(['instrument_type_name'])['instrument_type_name'].count())
-            print(df_final.groupby(['instrument_identification_name'])['instrument_type_name'].count())
+#            print(df_final.groupby(['instrument_type_name'])['instrument_type_name'].count())
+#            print(df_final.groupby(['instrument_identification_name'])['instrument_type_name'].count())
             df_final.to_csv('{}_instrument.csv'.format(titles[kk]), index=False)
+            os.remove('{}_instruments_feature.csv'.format(titles[kk]))
             x = 'Otra cosa'
         #    print(Ypredict)

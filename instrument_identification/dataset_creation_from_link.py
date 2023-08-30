@@ -1,6 +1,6 @@
 import pandas as pd
 import scipy.io.wavfile as wavfile
-import re
+import regex as re
 import librosa
 import os
 from feature_extraction import chunks, extract_peaks_and_freqs, final_data_collection, data_collection_only_peaks, mel_freq_cepstrum, dataset_merge
