@@ -167,14 +167,14 @@ if __name__ == '__main__':
         if x == 'Algo shady':
 #           try:
             if existir == 0:
-                title_file = str(download_audio(linko))
+                title_audio = str(download_audio(linko))
                 ######### RUN WITH DOWNLOAD
                 if background == 1:
                     ## separate background and frontground
-                    df_song = background_foreground(title_file, title, input_folder, output_folder_2)
+                    df_song = background_foreground(title_audio, title, input_folder, output_folder_2)
                 else:
                     ## No filters
-                    df_song = main_frequencies_songs(title_file, input_folder, output_folder, 0)
+                    df_song = main_frequencies_songs(title_audio, title, input_folder, output_folder_2, 0)
                 ##########
             else:
                 title_file = title
@@ -223,7 +223,7 @@ if __name__ == '__main__':
                                "(1940, 1959)","(1960, 1979)","(1980, 1999)",
                                "rms","spec_cent","rolloff","zcr","melodic_contour"]]
             df_song.to_csv(output_folder_2 + title+'_melodic.csv', index=False)
-#           os.remove(output_folder_2 + title+'_melodic_features.csv')
+            os.remove(output_folder_2 + title+'_melodic_features.csv')
             x = 'Otra cosa' 
 #            print(df_song.groupby(['octave'])['octave'].count())
 #            print(df_song.groupby(['note_code'])['note_code'].count())
