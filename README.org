@@ -1,6 +1,13 @@
 #+title: Methodology to determine song similarity
 #+author: Jorge Andrés Carballo Santana
 
+The main objective of this project is to extract non-trivial* features which describe a song. Ideally we can run this script with every song available, determine their score for every feature and, once we have a good database, create a song similarity score to recommend songs and create playlist with similar songs.
+
+
+#* By trivial I mean parameters that doesn't have a formal musical justification and have a rather emotional or abstract definition (danceability, mood, energy, ...)
+
+
+
 There are some parameters that characterizes a song, such as:
 
 ** 1. TONE COLOR/TIMBRE/INSTRUMENTATION
@@ -55,12 +62,9 @@ There are some parameters that characterizes a song, such as:
 ** 8. TEXT/EXTRAMUSICALITY:
    - use of words or other nonmusical ideas as essential part of piece vs. "absolute" music
 
-The objective of the current work is to create a project which detects and establish a "grade" of each parameter on a given song and, considering these grades, create playlists of similar vibes.
-
 
 * Approach:
-The first approach is to develop a Machine Learning model for each identification parameter of a song, such as, when executed each algorithm on a given song,
-the output would be a list of attributes given by each identification parameter. Our objective is to create a big database that contains the attributes of each
+The first approach is to develop either Machine Learning model or a numerical approach for each identification parameter of a song, such as, when executed each algorithm on a given song, the output would be a list of attributes given by each identification parameter. Our objective is to create a big database that contains the attributes of each
 existing song.
 
 The application of this model would be a recommendation system which brings fidelity to the musical taste of the user. The recommendation system would be built
@@ -68,55 +72,66 @@ by the intersection of attributes, and maybe other modifiable parameters like "r
 
 * 1. Develpoment TONE COLOR/TIMBRE/INSTRUMENTATION
 
-
 #+begin_TONE COLOR/TIMBRE/INSTRUMENTATION
-The approach that I will follow to calculate this parameter is to find the instruments that integrate the song.
-Maybe the most intuitive way to do this is to feed my database with the scale and sound of each existent instrument (or the most common used), this will be done by having an average tone and frequency of each note per instrument.
-Since the most recent music is made by computer, I believe that we can still use the previous methodology, since a computer-generated sound may sound similar to an existing instrument.
+The approach that we followed to obtain this feature is to generate time windows and extract 13 Mel-Frequency Cepstrum Coefficients (MFCC), root mean square (rms), spectral centroid (spec_cent), spectral bandwidth (spec_bw), spectral rolloff, zero crossing rate (zcr). With these information we can detect to which instrument the past features correspond.
+
+For each time window first we determine the type of instrument the prior corresponds, with that we determine the specific instrument. The instruments that we consider are separated in the type of instrument and the following:
+
+   - Woodwind: Clarinet, Flute, Oboe, Bassoon, Alto Saxophone, Wind Instrument
+   - Brass: Bass Tuba, French Horn, Trombone, Trumpet in C
+   - Bowed string instruments: Cello, Viola, Violin, Bowed string instrument
+   - Plucked string instruments: Guitar, Electric guitar, Acoustic guitar, Tapping, Bass guitar, Contrabass
+   - Keyboard: Keyboard, Accordion
+   - Percussion: Steelpan,Percussion, Drum and bass
+   - Singing: Single Voice Singing, Group Singing
+   - Noise: Noise
+
+For these categories there exist an open-source database with single notes audio for each instrument (TinySOL).
+
+Currently the result is a frequential count, but the objective is to create an statistical, probabilistic or a more complex result.
+
 #+end_TONE COLOR/TIMBRE/INSTRUMENTATION
 
 
-* DIFICULTADES PARA EL DESARROLLO
+* 2. and 3. Develpoment RYTHM and MELODY:
 
-Para definir un dataset con el que podamos trabajar, primero debemos definir la distribución de frecuencias y armónicos, así como su intensidad,  características de cada instrumento.
-Para conseguir lo anterior se propone realizar un análisis espectral de sonido por medio de un espectrograma (transformada corta de Fourier) y contrastarlo con su respectivas frecuencias dadas por su transformada rápida de Fourier.
+#+begin_RYTHM/MELODY
+To determine the melodic contour our approach is to, as the previous section, split the whole song in time windows and determine the pitch of each frame which will characterize the melodic contour.
 
-Idealmente se tendrían valores discretos de frecuencias y armónicos con su respectiva intensidad, pero en la práctica no se observa este comportamiento. Parece existir una distribución continua de frecuencias que describen cada sonido.
-Para taclear lo anterior se intentará colapsar (o sumar)  la intensidad de las frecuencias circundantes a los picos (intensidades de frecuencias)  más pronunciados, esto para tener una base de datos con frecuencias discretas e intensidades variables (aunque también se puede plantear la idea de fracuencias discretas). 
+Right now,  the melodic contour works as a mere finger print of the song; in the future we wish to determine melodic contour patterns which may describe it with less data and may work as a prior flag to determine a song similarity score before comparing fingerprints.
 
-Para alimentar al algoritmo de Machine Learning se debe idear una metodología con una cantidad de atributos (en este caso frecuencias y sus respectivas intensidades) discreto para que el algoritmo de Machine Learning (que aún no se establece cuál será) tenga un desempeño óptimo.
-Establezcamos un espectro continuo con frecuencias enteras (no decimales).
+Also, it may be important to point out that the current melodic contour strategy has static frequencies (which range in the audible spectrum 200-4000Hz) which will describe the features. In the future it will be nice to stablish a range of dynamic relevant frequencies that constitute the signal and then split the relevant features taking these range into consideration (ex: an overall high pitched song should only have features ranging from 1050Hz or higher and despise low frequencies).
 
-¿Qué hacer con las frecuencias negativas?, ¿Qué significan (oscilación en sentido antihorario)?
 
-Acotar las frecuencias permitidas (definir rango de escalas que nos interesan) B3 - D#5
 
-Elaborar una base de datos y un modelo que detecte las notas aisladas de cada instrumento, posteriormente desarrollar uno con notas diferentes (una canción).
 
-THE EXECUTION OF THE CLASSIFICATION MODEL HAS BEEN POSPONED SINCE CURRENTLY WE ARE EXPLORING OTHER FEATURES RELEVANT TO THE PROBLEM.
+
+
+#+end_RYTHM/MELODY
 
 * Important Links:
-TinySOL Database - https://zenodo.org/record/3685367#.XnFp5i2h1IU%22
-VocalSet - https://zenodo.org/record/1193957
-Reference article - https://www.mdpi.com/2079-9292/11/9/1405/htm
-Mathematical reference example - https://doi.org/10.1016/j.ejor.2022.05.008
-Feature from audio extraction reference - https://arxiv.org/abs/1912.02606
-Melodic Contour - https://phamoxmusic.com/melodic-contour/
-Measure Similarity between two temporal signals - https://en.wikipedia.org/wiki/Dynamic_time_warping
-GuitarSet - https://guitarset.weebly.com/
-Rhythm - https://www.britannica.com/art/Baroque-music https://www.soundbrenner.com/blog/rhythm-basics-beat-measure-meter-time-signature-tempo/
-Source Separation - https://source-separation.github.io/tutorial/intro/tutorial_structure.html
-REPET Algorithm - https://lucainiaoge.github.io/2021/03/31/REPET_Algorithm_study/
-Chroma Feature Extraction - https://www.researchgate.net/publication/330796993_Chroma_Feature_Extraction
-Cyclic tempogram - https://ieeexplore.ieee.org/abstract/document/5495219/authors#authors
+   * TinySOL Database - https://zenodo.org/record/3685367#.XnFp5i2h1IU%22
+   * VocalSet - https://zenodo.org/record/1193957
+   * Mel-frequency cepstrum - https://en.wikipedia.org/wiki/Mel-frequency_cepstrum
+   * Reference article - https://www.mdpi.com/2079-9292/11/9/1405/htm
+   * Mathematical reference example - https://doi.org/10.1016/j.ejor.2022.05.008
+   * Feature from audio extraction reference - https://arxiv.org/abs/1912.02606
+   * Melodic Contour - https://phamoxmusic.com/melodic-contour/
+   * Measure Similarity between two temporal signals - https://en.wikipedia.org/wiki/Dynamic_time_warping
+   * GuitarSet - https://guitarset.weebly.com/
+   * Rhythm - https://www.britannica.com/art/Baroque-music https://www.soundbrenner.com/blog/rhythm-basics-beat-measure-meter-time-signature-tempo/
+   * Source Separation - https://source-separation.github.io/tutorial/intro/tutorial_structure.html
+   * REPET Algorithm - https://lucainiaoge.github.io/2021/03/31/REPET_Algorithm_study/
+   * Chroma Feature Extraction - https://www.researchgate.net/publication/330796993_Chroma_Feature_Extraction
+   * Cyclic tempogram - https://ieeexplore.ieee.org/abstract/document/5495219/authors#authors
 
 
 * Modularity:
 - Make a script that creates a data set of an input Youtube link. Make it so it can run in a terminal (this one is to run with the final model).
 - Create another similar script which takes a reference Youtube link and append its output to the training dataset.
 
+  
 * Noise reduction:
-
 - Find relations between original signal and noise. Simulate noise and add it to the single notes played.
   It would be nice to insolate and identify the instrument from a whole song an identify the signal-noise ratio.
 - With this we would be able to isolate the peaks from the instrument from the background noise.
