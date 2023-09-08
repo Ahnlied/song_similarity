@@ -1,10 +1,13 @@
-#+title: Methodology to determine song similarity
-#+author: Jorge Andrés Carballo Santana
+#+TITLE: Methodology to determine song similarity
+#+AUTHOR: Jorge Andrés Carballo Santana
+#+DATE: september 2023
+
+#+BIBLIOGRAPHY: bibliography.bib
 
 The main objective of this project is to extract non-trivial* features which describe a song. Ideally we can run this script with every song available, determine their score for every feature and, once we have a good database, create a song similarity score to recommend songs and create playlist with similar songs.
 
 
-#* By trivial I mean parameters that doesn't have a formal musical justification and have a rather emotional or abstract definition (danceability, mood, energy, ...)
+* By trivial I mean parameters that doesn't have a formal musical justification and have a rather emotional or abstract definition (danceability, mood, energy, ...)
 
 
 
@@ -71,7 +74,7 @@ The application of this model would be a recommendation system which brings fide
 by the intersection of attributes, and maybe other modifiable parameters like "range of similarity", the message transmitted by the song's lyrics and so on.
 
 * 1. Develpoment TONE COLOR/TIMBRE/INSTRUMENTATION
-The approach that we followed to obtain this feature is to generate time windows and extract 13 Mel-Frequency Cepstrum Coefficients (MFCC), root mean square (rms), spectral centroid (spec_cent), spectral bandwidth (spec_bw), spectral rolloff, zero crossing rate (zcr). With these information we can detect to which instrument the past features correspond.
+The approach that we followed to obtain this feature is to generate time windows and extract 13 Mel-Frequency Cepstrum Coefficients (MFCC), root mean square (rms), spectral centroid (spec_cent), spectral bandwidth (spec_bw), spectral rolloff, zero crossing rate (zcr) [cite:@feat_from_audio]. With these information we can detect to which instrument the past features correspond.
 
 For each time window first we determine the type of instrument the prior corresponds, with that we determine the specific instrument. The instruments that we consider are separated in the type of instrument and the following:
 
@@ -84,38 +87,22 @@ For each time window first we determine the type of instrument the prior corresp
    - Singing: Single Voice Singing, Group Singing
    - Noise: Noise
 
-For these categories there exist an open-source database with single notes audio for each instrument [cite:common @tinysol]. Other database used is Google audioset [cite:common, @audioset], which provides links of YouTube videos with content provided by a variety of tags.
+For these categories there exist an open-source database with single notes audio for each instrument [cite:@tinysol]. Other database used is Google audioset [cite:@audioset], which provides links of YouTube videos with content provided by a variety of tags.
 
 Currently the result is a frequential count, but the objective is to create an statistical, probabilistic or a more complex result.
 
 
 
+
 * 2. and 3. Develpoment RYTHM and MELODY:
 
-To determine the melodic contour our approach is to, as the previous section, split the whole song in time windows and determine the pitch of each frame which will characterize the melodic contour.
+To determine the melodic contour [cite:@melody_transcription; @spectral_envelope; @melodic_contour] our approach is to, as the previous section, split the whole song in time windows and determine the pitch of each frame which will characterize the melodic contour.
+
+The database utilized to train the models [cite:@nsynth_database; @tinysol] which are note-separated sounds of individual instruments, in order to extract the corresponding frequencies and harmonics.
 
 Right now,  the melodic contour works as a mere finger print of the song; in the future we wish to determine melodic contour patterns which may describe it with less data and may work as a prior flag to determine a song similarity score before comparing fingerprints.
 
 Also, it may be important to point out that the current melodic contour strategy has static frequencies (which range in the audible spectrum 200-4000Hz) which will describe the features. In the future it will be nice to stablish a range of dynamic relevant frequencies that constitute the signal and then split the relevant features taking these range into consideration (ex: an overall high pitched song should only have features ranging from 1050Hz or higher and despise low frequencies).
-
-
-
-* Important Links:
-   @tinysol: TinySOL Database - https://zenodo.org/record/3685367#.XnFp5i2h1IU%22 
-   @vocalset: VocalSet -  https://zenodo.org/record/1193957
-   @audioset: Google AudioSet - http://research.google.com/audioset/
-   @mfccs: Mel-frequency cepstrum - https://en.wikipedia.org/wiki/Mel-frequency_cepstrum
-   @melodic_contour: Melodic Contour - https://phamoxmusic.com/melodic-contour/
-   @DTW: Measure Similarity between two temporal signals - https://en.wikipedia.org/wiki/Dynamic_time_warping
-   @repet: REPET Algorithm - https://lucainiaoge.github.io/2021/03/31/REPET_Algorithm_study/
-   * Reference article - https://www.mdpi.com/2079-9292/11/9/1405/htm
-   * Mathematical reference example - https://doi.org/10.1016/j.ejor.2022.05.008
-   * Feature from audio extraction reference - https://arxiv.org/abs/1912.02606
-   * GuitarSet - https://guitarset.weebly.com/
-   * Rhythm - https://www.britannica.com/art/Baroque-music https://www.soundbrenner.com/blog/rhythm-basics-beat-measure-meter-time-signature-tempo/
-   * Source Separation - https://source-separation.github.io/tutorial/intro/tutorial_structure.html
-   * Chroma Feature Extraction - https://www.researchgate.net/publication/330796993_Chroma_Feature_Extraction
-   * Cyclic tempogram - https://ieeexplore.ieee.org/abstract/document/5495219/authors#authors
 
 
 * Modularity:
@@ -130,4 +117,3 @@ Also, it may be important to point out that the current melodic contour strategy
 - Separate the song in parts: Background (repeating sounds which only stablishes rythm and tempo), Frontground (relevant sounds which helps on distinguish the melody of a song),
   also it would be important to retreave only singer's voices to make analysis on its characteristics. From this distinction it would be easier to extract the rythm of a song.
   
-
