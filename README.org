@@ -87,7 +87,12 @@ For each time window first we determine the type of instrument the prior corresp
    - Singing: Single Voice Singing, Group Singing
    - Noise: Noise
 
-For these categories there exist an open-source database with single notes audio for each instrument [cite:@tinysol]. Other database used is Google audioset [cite:@audioset], which provides links of YouTube videos with content provided by a variety of tags.
+For these categories there exist an open-source database with single notes audio for each instrument [11]. Other database used is Google audioset [8], which provides links of YouTube videos with content provided by a variety of tags.
+
+#+BEGIN_COMMENT
+[cite:@tinysol]
+[cite:@audioset] 
+#+END_COMMENT
 
 Currently the result is a frequential count, but the objective is to create an statistical, probabilistic or a more complex result.
 
@@ -96,9 +101,17 @@ Currently the result is a frequential count, but the objective is to create an s
 
 * 2. and 3. Develpoment RYTHM and MELODY:
 
-To determine the melodic contour [cite:@melody_transcription; @spectral_envelope; @melodic_contour] our approach is to, as the previous section, split the whole song in time windows and determine the pitch of each frame which will characterize the melodic contour.
+To determine the melodic contour [3,4,10] our approach is to, as the previous section, split the whole song in time windows and determine the pitch of each frame which will characterize the melodic contour.
 
-The database utilized to train the models [cite:@nsynth_database; @tinysol] which are note-separated sounds of individual instruments, in order to extract the corresponding frequencies and harmonics.
+#+BEGIN_COMMENT
+[cite:@melody_transcription; @spectral_envelope; @melodic_contour]
+#+END_COMMENT
+
+The database utilized to train the models [6,11] which are note-separated sounds of individual instruments, in order to extract the corresponding frequencies and harmonics.
+
+#+BEGIN_COMMENT
+ [cite:@nsynth_database; @tinysol]
+#+END_COMMENT
 
 Right now,  the melodic contour works as a mere finger print of the song; in the future we wish to determine melodic contour patterns which may describe it with less data and may work as a prior flag to determine a song similarity score before comparing fingerprints.
 
@@ -117,3 +130,45 @@ Also, it may be important to point out that the current melodic contour strategy
 - Separate the song in parts: Background (repeating sounds which only stablishes rythm and tempo), Frontground (relevant sounds which helps on distinguish the melody of a song),
   also it would be important to retreave only singer's voices to make analysis on its characteristics. From this distinction it would be easier to extract the rythm of a song.
   
+
+* BIBLIOGRAPHY:
+- [1] /Acoustic Descriptors for Characterization of Musical Timbre Using the Fast Fourier Transform./ Yubiry Gonzalez,  Ronaldo C. Prati, *Electronics 2022, 11, 1405*, https://www.mdpi.com/2079-9292/11/9/1405/htm
+
+- [2] /Predominant Musical Instrument Classification based on Spectral Features./ Ankit Khairkar, Chaudhari Bhushan Jayant, Karthikeya Racharla, Paturu Harish, Vineet Kumar, *Indian Statistical Institute Kolkata, WB 700 108*,
+https://arxiv.org/abs/1912.02606
+
+- [3] /Spectral envelope estimation, representation, and morphing for sound analysis, transformation, and synthesis/, Diemo Schwarz, Xavier Rodet, *ICMC: International Computer Music Conference, Oct 1999, Pekin, China. pp.1-1.*
+LINK={https://hal.science/hal-01161231}
+
+- [4] /A CLASSIFICATION APPROACH TO MELODY TRANSCRIPTION./ Graham E. Poliner and Daniel P.W. Ellis, *LabROSA, Dept. of Electrical Engineering Columbia University, New York NY 10027 USA
+2005 Queen Mary, University of London.*
+
+- [5] /Music Similarity Measures: What’s the Use?/ Jean-Julien Aucouturier, Francois Pachet, *SONY Computer Science Lab. 6, rue Amyot 75005 Paris, France*
+
+- [6] /TinySOL Database./ https://zenodo.org/record/3685367#.XnFp5i2h1IU%22
+
+- [7] /VocalSet/ https://zenodo.org/record/1193957
+
+- [8] /Google AudioSet/ http://research.google.com/audioset/
+
+- [9] /Mel-frequency cepstrum/ https://en.wikipedia.org/wiki/Mel-frequency_cepstrum
+
+- [10] /Melodic Contour/ https://phamoxmusic.com/melodic-contour/
+
+- [11] /The NSynth Dataset/ https://magenta.tensorflow.org/datasets/nsynth
+
+- [12] /Measure Similarity between two temporal signals/ https://en.wikipedia.org/wiki/Dynamic_time_warping
+
+- [13] /REPET Algorithm/ https://lucainiaoge.github.io/2021/03/31/REPET_Algorithm_study/
+
+- [14] /GuitarSet/ https://guitarset.weebly.com/
+
+- [15] /Rhythm/ https://www.britannica.com/art/Baroque-music https://www.soundbrenner.com/blog/rhythm-basics-beat-measure-meter-time-signature-tempo/}
+
+- [16] /Source Separation/ https://source-separation.github.io/tutorial/intro/tutorial_structure.html
+
+- [17] /Chroma Feature Extraction/ https://www.researchgate.net/publication/330796993_Chroma_Feature_Extraction
+
+- [18] /Cyclic tempogram/ https://ieeexplore.ieee.org/abstract/document/5495219/authors#authors
+
+- [19] Mathematical reference example https://doi.org/10.1016/j.ejor.2022.05.008
