@@ -31,7 +31,7 @@ from feature_extraction import  mel_freq_cepstrum, dataset_merge #chunks, extrac
 ##### CHANGE ROUTE OF OUTPUTS
 sys.path.insert(0, '/home/jacs/Documents/DataScience/Personal/song_similarity/')
 import repet
-from audio_from_link import delete_spaces, download_audio, remove_audio, from_mp4_to_wav #obtain_youtube_link
+from audio_from_link import delete_spaces, download_audio, remove_audio, from_mp4_to_wav,  extract_title #obtain_youtube_link
 
 ############################
 

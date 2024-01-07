@@ -64,7 +64,7 @@ def song_feature_extraction_cepstrum(kk):
     range_2 = str(df_links['to'].iloc[kk])
     print(range_1,range_2)
     linko = links_audio[kk]
-    title_file = str(download_audio(linko))
+    title_file = extract_title(linko)
     df_final = pd.DataFrame()
     try:
         audio, Fs = librosa.load(input_folder + title_file+'.wav')
@@ -90,6 +90,7 @@ def song_feature_extraction_cepstrum(kk):
 #    remove_audio(title_file+'.wav')
     remove_audio('background_signal'+'.wav')
     remove_audio('foreground_signal'+'.wav')
+    remove_audio(input_folder + title_file + '.wav')
     return df_final
 
 def instrument_identification(X):

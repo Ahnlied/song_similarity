@@ -2,13 +2,14 @@
 #+AUTHOR: Jorge Andrés Carballo Santana
 #+DATE: september 2023
 
+#+BEGIN_COMMENT
 #+BIBLIOGRAPHY: bibliography.bib
+#+END_COMMENT
 
-The main objective of this project is to extract non-trivial* features which describe a song. Ideally we can run this script with every song available, determine their score for every feature and, once we have a good database, create a song similarity score to recommend songs and create playlist with similar songs.
+The main objective of this project is to extract non-trivial features which describe a song. Ideally we can run this script with every song available, determine their score for every feature and, once we have a good database, create a song similarity score to recommend songs and create playlist with similar songs.
 
 
-* By trivial I mean parameters that doesn't have a formal musical justification and have a rather emotional or abstract definition (danceability, mood, energy, ...)
-
+[By trivial I mean parameters that doesn't have a formal musical justification and have a rather emotional or abstract definition (danceability, mood, energy, ...)]
 
 
 There are some parameters that characterizes a song, such as:
@@ -73,7 +74,7 @@ existing song.
 The application of this model would be a recommendation system which brings fidelity to the musical taste of the user. The recommendation system would be built
 by the intersection of attributes, and maybe other modifiable parameters like "range of similarity", the message transmitted by the song's lyrics and so on.
 
-* 1. Develpoment TONE COLOR/TIMBRE/INSTRUMENTATION
+** 1. Develpoment TONE COLOR/TIMBRE/INSTRUMENTATION
 The approach that we followed to obtain this feature is to generate time windows and extract 13 Mel-Frequency Cepstrum Coefficients (MFCC), root mean square (rms), spectral centroid (spec_cent), spectral bandwidth (spec_bw), spectral rolloff, zero crossing rate (zcr) [cite:@feat_from_audio]. With these information we can detect to which instrument the past features correspond.
 
 For each time window first we determine the type of instrument the prior corresponds, with that we determine the specific instrument. The instruments that we consider are separated in the type of instrument and the following:
@@ -99,7 +100,7 @@ Currently the result is a frequential count, but the objective is to create an s
 
 
 
-* 2. and 3. Develpoment RYTHM and MELODY:
+** 2. and 3. Develpoment RYTHM and MELODY:
 
 To determine the melodic contour [3,4,10] our approach is to, as the previous section, split the whole song in time windows and determine the pitch of each frame which will characterize the melodic contour.
 
@@ -113,9 +114,11 @@ The database utilized to train the models [6,11] which are note-separated sounds
  [cite:@nsynth_database; @tinysol]
 #+END_COMMENT
 
-Right now,  the melodic contour works as a mere finger print of the song; in the future we wish to determine melodic contour patterns which may describe it with less data and may work as a prior flag to determine a song similarity score before comparing fingerprints.
+Right now,  the melodic contour works as a mere finger print of the song; to extract the corresponding features of each song finger-print we expect to develop 
 
 Also, it may be important to point out that the current melodic contour strategy has static frequencies (which range in the audible spectrum 200-4000Hz) which will describe the features. In the future it will be nice to stablish a range of dynamic relevant frequencies that constitute the signal and then split the relevant features taking these range into consideration (ex: an overall high pitched song should only have features ranging from 1050Hz or higher and despise low frequencies).
+
+
 
 
 * Modularity:

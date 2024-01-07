@@ -29,11 +29,22 @@ def delete_spaces(selected_video):
 #    title2 = re.sub("°","",title2)
     title2 = re.sub('"',"",title2)
     title2 = re.sub("(\s)","_"," ".join(re.sub("(-)|(&)|(\[)|(\])","",title2).split()))
-    print(title2)
+    title2 = title2.lower()
     return title2
 
 
 #######################################################
+
+# To return the title of the youtube video
+
+def extract_title(link):
+    selected_video = YouTube(link)
+    title = str(delete_spaces(selected_video))
+    return title
+
+
+#######################################################
+
 # To download audio from a Youtube link to then run the data collection
 
 def download_audio(link):
@@ -43,7 +54,7 @@ def download_audio(link):
     audio = selected_video.streams.filter(only_audio=True, file_extension='mp4').first()
     if selected_video.length <= 300:
         audio.download(filename= output_path + title + '.wav')
-        return title
+        return str(title)
     else:
         raise ValueError("Arguments have different lengths!")
 

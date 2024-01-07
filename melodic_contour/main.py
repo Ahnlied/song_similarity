@@ -168,6 +168,7 @@ if __name__ == '__main__':
 #           try:
             if existir == 0:
                 title_audio = str(download_audio(linko))
+#                title_audio = title
                 ######### RUN WITH DOWNLOAD
                 if background == 1:
                     ## separate background and frontground
